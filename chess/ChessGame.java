@@ -1,13 +1,32 @@
 package chess;
-import java.io.*;
-import java.util.*;
 
-public class ChessGame {
-    public ChessGame(){
-        new Window();
-    }
-    public static void main(String[] args) throws IOException, InterruptedException {
-        new ChessGame();
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+
+public class ChessGame extends JFrame {
+
+    public ChessGame() {
+
+        initUI();
     }
 
+    private void initUI() {
+
+        add(new Board());
+
+        setSize(1200, 700);
+        setResizable(false);
+
+        setTitle("ChessGame");
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+
+        EventQueue.invokeLater(() -> {
+            ChessGame ex = new ChessGame();
+            ex.setVisible(true);
+        });
+    }
 }
