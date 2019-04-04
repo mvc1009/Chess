@@ -1,28 +1,27 @@
-package chess;
+package chess.piece;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-
-public class Tower extends Piece {
+import chess.*;
+public class Horse extends Piece {
 
     private boolean site; //true right -> false left
 
-    public Tower(boolean color, boolean site) {
-        super(color, TOWER);
+    public Horse(boolean color, boolean site) {
+        super(color, HORSE);
         this.site = site;
-        initTower();
-
+        initHorse();
     }
 
-    private void initTower() {
+    private void initHorse() {
         if(isWhite()){
-          loadImage("multimedia/pieces/white_tower.png");
+          loadImage("multimedia/pieces/white_horse.png");
         }else{
-          loadImage("multimedia/pieces/black_tower.png");
+          loadImage("multimedia/pieces/black_horse.png");
         }
         getImageDimensions();
-        this.x = INITIAL_X + (((site) ? 1 : 0) * STEP * 7);    // Set initial Tower cordinates on board
+        this.x = INITIAL_X + (((site) ? 1 : 0) * STEP * 6 ) + (((!site) ? 1 : 0) * STEP);    // Set initial horse cordinates on board
         this.y = INITIAL_Y + (((color) ? 1 : 0) * STEP * 7);
     }
 

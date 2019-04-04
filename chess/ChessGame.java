@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 
 public class ChessGame extends JFrame {
 
+    private boolean chessgameVisible = false;
     public ChessGame() {
 
         initUI();
@@ -23,7 +24,6 @@ public class ChessGame extends JFrame {
     }
 
     public static void main(String[] args) {
-
         EventQueue.invokeLater(() -> {
             ChessGame ex = new ChessGame();
             ex.setVisible(true);

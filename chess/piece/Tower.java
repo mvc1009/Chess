@@ -1,30 +1,31 @@
-package chess;
+package chess.piece;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pawn extends Piece {
+import chess.*;
 
-    private int site; //true right -> false left
+public class Tower extends Piece {
 
-    public Pawn(boolean color, int site) {
-        super(color, PAWN);
+    private boolean site; //true right -> false left
+
+    public Tower(boolean color, boolean site) {
+        super(color, TOWER);
         this.site = site;
-        initPawn();
+        initTower();
 
     }
 
-    private void initPawn() {
+    private void initTower() {
         if(isWhite()){
-          loadImage("multimedia/pieces/white_pawn.png");
+          loadImage("multimedia/pieces/white_tower.png");
         }else{
-          loadImage("multimedia/pieces/black_pawn.png");
+          loadImage("multimedia/pieces/black_tower.png");
         }
         getImageDimensions();
-
-        this.x = INITIAL_X + ((site - 1) * STEP );    // Set initial Pawn cordinates on board
-        this.y = INITIAL_Y + (((color) ? 1 : 0) * STEP * 6) +(((!color) ? 1 : 0) * STEP);
+        this.x = INITIAL_X + (((site) ? 1 : 0) * STEP * 7);    // Set initial Tower cordinates on board
+        this.y = INITIAL_Y + (((color) ? 1 : 0) * STEP * 7);
     }
 
     public void move(int xy) {

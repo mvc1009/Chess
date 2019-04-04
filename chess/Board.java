@@ -17,20 +17,24 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.util.Iterator;
 
+import chess.piece.*;
+
 public class Board extends JPanel implements ActionListener {
 
 
     public static final int INITIAL_X = 220;
     public static final int INITIAL_Y = 70;
     public static final int STEP = 60;
+    public static final int OUTOFBOUND_X = 700;
+    public static final int OUTOFBOUND_Y = 550;
     //private final int ICRAFT_X = 40;
     //private final int ICRAFT_Y = 60;
     private final int DELAY = 10;
     private Timer timer;
     private Background background;
     private Chessboard chessboard;
-    int boxPressed = 99;
-    boolean isBoxPressed = false;
+    private int boxPressed = 99;
+    private boolean isBoxPressed = false;
 
     public Board() {
 
@@ -70,15 +74,7 @@ public class Board extends JPanel implements ActionListener {
         for( Piece piece : chessboard.getPieces().values() ){
             g2d.drawImage(piece.getImage(), piece.getX(), piece.getY(), this);
         }
-        //g2d.drawImage(spaceShip.getImage(), spaceShip.getX(),spaceShip.getY(), this);
-
-        /*List<Missile> missiles = spaceShip.getMissiles();
-
-        for (Missile missile : missiles) {
-
-            g2d.drawImage(missile.getImage(), missile.getX(),
-                    missile.getY(), this);
-        }*/
+        if(isBoxPressed){
         g.setColor(Color.WHITE);            //cutre
         g.drawString("Turn: WHITE", 5, 15);
 
@@ -89,7 +85,7 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(Color.RED);
         g.setFont(small);
         g.drawString(msg, 70,60);
-
+      }
     }
 
     @Override
@@ -105,6 +101,8 @@ public class Board extends JPanel implements ActionListener {
         for( Piece piece : chessboard.getPieces().values() ){
             if(piece.isMove()){
               piece.move(boxPressed);
+
+
             }
         }
         /*List<Missile> missiles = spaceShip.getMissiles();
@@ -151,13 +149,16 @@ public class Board extends JPanel implements ActionListener {
             int x = e.getX();
             int y = e.getY();
             boxPressed = beginningBox(x,y);
+            System.out.println("boxPressed = " + boxPressed);
             if(!isBoxPressed && chessboard.getPieces().containsKey(boxPressed)){
                 isBoxPressed = true;
-                System.out.println("Piece pressed");
+                //System.out.println("Piece pressed");
             }else{
-                if(box != 99){
-                    chessboard.getPieces().get(box).setMove(true);
-                    System.out.println("Piece leave");
+                if(boxPressed != 99){
+                    if(chessboard.getPieces().get(boxPressed) != null){
+                        chessboard.getPieces().get(boxPressed).setMove(true);
+                    }
+                    //System.out.println("Piece leave");
                 }
             }
 
@@ -172,21 +173,19 @@ public class Board extends JPanel implements ActionListener {
         }
         public int beginningBox(int xi, int yi){
           int i = 0;
-          int box = 0;
-          boolean eox = false;
-          boolean eoy = false;
+          int x = 9;
+          int y = 9;
+
           while(i < 8){
-              if((xi > INITIAL_X + STEP*i) && !eox){
-                box = i * 10;
-                eox = true;
+              if((xi > INITIAL_X + STEP*i) && xi < OUTOFBOUND_X){
+                x = i+1;
               }
-              if((yi> INITIAL_Y + STEP * i) && !eoy){
-                box = box +i;
-                eoy = true;
+              if((yi > INITIAL_Y + STEP * i) && yi < OUTOFBOUND_Y){
+                y= 8 - (i);
               }
               i++;
           }
-          return box;
+          return x*10 +y;
         }
 
 

@@ -1,8 +1,9 @@
-package chess;
+package chess.piece;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import chess.*;
 
 public class Queen extends Piece {
 

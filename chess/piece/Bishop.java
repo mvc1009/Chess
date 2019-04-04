@@ -1,9 +1,9 @@
-package chess;
+package chess.piece;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-
+import chess.*;
 public class Bishop extends Piece {
 
     private boolean site; //true right -> false left

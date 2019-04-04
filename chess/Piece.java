@@ -28,7 +28,7 @@ public class Piece {
     protected boolean color;  // TRUE -> white FALSE -> black
     protected Image image;
     protected int type;
-  //  protected boolean toMove;
+    protected boolean toMove;
     //protected int futureMove;
 
     public Piece(boolean color, int type) {

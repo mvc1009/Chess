@@ -4,8 +4,11 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import java.util.HashMap;
 
+import chess.piece.*;
+
 
 public class Chessboard {
+
 
     protected int width;
     protected int height;
@@ -39,23 +42,23 @@ public class Chessboard {
     private void initialPiecesPositions(){
         chessboard = new HashMap<Integer,Piece>();
         //White initials:
-        chessboard.put(1, new Tower(true, false));
-        chessboard.put(2, new Horse(true, false));
-        chessboard.put(3, new Bishop(true,false));
-        chessboard.put(4, new Queen(true));
-        chessboard.put(5, new King(true));
-        chessboard.put(6, new Bishop(true, true));
-        chessboard.put(7, new Horse(true, true));
-        chessboard.put(8, new Tower(true, true));
+        chessboard.put(11, new Tower(true, false));
+        chessboard.put(21, new Horse(true, false));
+        chessboard.put(31, new Bishop(true,false));
+        chessboard.put(41, new Queen(true));
+        chessboard.put(51, new King(true));
+        chessboard.put(61, new Bishop(true, true));
+        chessboard.put(71, new Horse(true, true));
+        chessboard.put(81, new Tower(true, true));
 
-        chessboard.put(11, new Pawn(true, 1));
-        chessboard.put(21, new Pawn(true, 2));
-        chessboard.put(31, new Pawn(true, 3));
-        chessboard.put(41, new Pawn(true, 4));
-        chessboard.put(51, new Pawn(true, 5));
-        chessboard.put(61, new Pawn(true, 6));
-        chessboard.put(71, new Pawn(true, 7));
-        chessboard.put(81, new Pawn(true, 8));
+        chessboard.put(12, new Pawn(true, 1));
+        chessboard.put(22, new Pawn(true, 2));
+        chessboard.put(32, new Pawn(true, 3));
+        chessboard.put(42, new Pawn(true, 4));
+        chessboard.put(52, new Pawn(true, 5));
+        chessboard.put(62, new Pawn(true, 6));
+        chessboard.put(72, new Pawn(true, 7));
+        chessboard.put(82, new Pawn(true, 8));
 
         //Black initials:
         chessboard.put(18, new Tower(false, false));
