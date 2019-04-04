@@ -3,7 +3,7 @@
 We are doing a Player vs Player chess in java!
 All media files that we use are [here!][medialink]
 
-Bibliography:
+Bibliography:  
 [Java2D games Tutorial][Java2Dgames]  
 [Java2D Tutorial][Java2D]  
 [JavaSwing Tutorial][JavaSwing]  
