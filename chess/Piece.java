@@ -9,8 +9,10 @@ public class Piece {
 
 
     public static final int INITIAL_X = 220;
-    public static final int INITIAL_Y = 70;
+    public static final int INITIAL_Y = 490;
     public static final int STEP = 60;
+    public static final int OUTOFBOUND_X = 700;
+    public static final int OUTOFBOUND_Y = 550;
 
     // PIECES
     public static final int TOWER = 1;
@@ -23,6 +25,8 @@ public class Piece {
 
     protected int x;
     protected int y;
+    private int dx;
+    private int dy;
     protected int width;
     protected int height;
     protected boolean color;  // TRUE -> white FALSE -> black
@@ -77,10 +81,34 @@ public class Piece {
     public void setMove(boolean move){
       this.toMove = move;
     }
-    public void move(int box){
-      this.x = box/10 + INITIAL_X;
-      this.y = box%10 + INITIAL_Y;
+    public void move(){
+      this.x = dx;
+      this.y = dy;
       setMove(false);
+    }
+    public void mousePressed(MouseEvent e){
+      int box = beginningBox(e.getX(), e.getY());
+      dx= STEP*((box/10)-1) + INITIAL_X;
+      dy = INITIAL_Y - STEP*((box-1)%10);
+    }
+    public int beginningBox(int xi, int yi){
+      int i = 0;
+      int x = 9;
+      int y = 9;
+
+      while(i < 8){
+          if((xi > INITIAL_X + STEP*i) && xi < OUTOFBOUND_X){
+            x = i+1;
+          }
+          if((yi < INITIAL_Y - STEP*i) && yi < OUTOFBOUND_Y){
+            y= i+2;
+          }
+          else if((yi > INITIAL_Y && yi< OUTOFBOUND_Y)){
+            y = 1;
+          }
+          i++;
+      }
+      return x*10 +y;
     }
     /*public int getFutureMove(){
       return futureMove;

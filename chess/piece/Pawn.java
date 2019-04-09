@@ -24,7 +24,7 @@ public class Pawn extends Piece {
         getImageDimensions();
 
         this.x = INITIAL_X + ((site - 1) * STEP );    // Set initial Pawn cordinates on board
-        this.y = INITIAL_Y + (((color) ? 1 : 0) * STEP * 6) +(((!color) ? 1 : 0) * STEP);
+        this.y = INITIAL_Y - (((!color) ? 1 : 0) * STEP * 6) -(((color) ? 1 : 0) * STEP);
     }
 
     public void move(int xy) {

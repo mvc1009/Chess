@@ -25,7 +25,7 @@ public class Tower extends Piece {
         }
         getImageDimensions();
         this.x = INITIAL_X + (((site) ? 1 : 0) * STEP * 7);    // Set initial Tower cordinates on board
-        this.y = INITIAL_Y + (((color) ? 1 : 0) * STEP * 7);
+        this.y = INITIAL_Y - (((!color) ? 1 : 0) * STEP * 7);
     }
 
     public void move(int xy) {

@@ -23,7 +23,7 @@ public class Bishop extends Piece {
         }
         getImageDimensions();
         this.x = INITIAL_X + (((site) ? 1 : 0) * STEP * 5) + (((!site) ? 1 : 0) * STEP * 2);    // Set initial bishop cordinates on board
-        this.y = INITIAL_Y + (((color) ? 1 : 0) * STEP * 7);
+        this.y = INITIAL_Y - (((!color) ? 1 : 0) * STEP * 7);
     }
 
     public void move(int xy) {

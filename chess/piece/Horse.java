@@ -22,7 +22,7 @@ public class Horse extends Piece {
         }
         getImageDimensions();
         this.x = INITIAL_X + (((site) ? 1 : 0) * STEP * 6 ) + (((!site) ? 1 : 0) * STEP);    // Set initial horse cordinates on board
-        this.y = INITIAL_Y + (((color) ? 1 : 0) * STEP * 7);
+        this.y = INITIAL_Y - (((!color) ? 1 : 0) * STEP * 7);
     }
 
     public void move(int xy) {
