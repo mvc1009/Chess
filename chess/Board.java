@@ -21,6 +21,12 @@ import chess.piece.*;
 
 public class Board extends JPanel implements ActionListener {
 
+    public static final int TOWER = 1;
+    public static final int HORSE = 2;
+    public static final int BISHOP = 3;
+    public static final int QUEEN = 4;
+    public static final int KING = 5;
+    public static final int PAWN = 6;
 
     public static final int INITIAL_X = 220;
     public static final int INITIAL_Y = 490;
@@ -39,6 +45,7 @@ public class Board extends JPanel implements ActionListener {
     private boolean isWhiteTurn;
 
     HashMap<Integer, Piece> pieces;
+    HashMap<Integer, Dot> posiblesMovements;
     private int boxPressed = 99;
     private int piecePressed = 99;
     private boolean isBoxPressed = false;
@@ -48,6 +55,7 @@ public class Board extends JPanel implements ActionListener {
 
         initBoard();
         initialPiecesPositions();
+        initialPosiblePositions();
 
     }
 
@@ -85,7 +93,11 @@ public class Board extends JPanel implements ActionListener {
         for( Piece piece : pieces.values() ){
             g2d.drawImage(piece.getImage(), piece.getX(), piece.getY(), this);
         }
-
+        for(Dot dot : posiblesMovements.values()){
+            if(dot.isVisible()){
+              g2d.drawImage(dot.getImage(), dot.getX(), dot.getY(), this);
+            }
+        }
         //TURN LABEL
         String msg = "Turn: ";
         if(isWhiteTurn){
@@ -105,10 +117,16 @@ public class Board extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         updateStroke();
         updatePieces();
-
         repaint();
     }
-
+    private void initialPosiblePositions(){
+      posiblesMovements = new HashMap<Integer, Dot>();
+      for(int i = 0; i <= 8; i++){
+        for(int j = 0; j<= 8; j++){
+          posiblesMovements.put(i*10+j, new Dot(i*10+j));
+        }
+      }
+    }
     private void initialPiecesPositions(){
         pieces = new HashMap<Integer,Piece>();
         //White initials:
@@ -159,7 +177,6 @@ public class Board extends JPanel implements ActionListener {
           if(piece.isMove()){
             piece.move();
           }
-
       }
     }
 
@@ -176,6 +193,33 @@ public class Board extends JPanel implements ActionListener {
         }
         return false;
 
+    }
+    public void posibleMovement(Piece piece2Move){ //rules
+      int box = piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY());
+      int i = 0;
+      boolean pieceInMiddle = false;
+      while(i < 8){
+        switch(piece2Move.getType()){
+          case TOWER:
+          case HORSE:
+          case BISHOP:
+          case KING:
+          case QUEEN:
+          case PAWN:
+            if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+              posiblesMovements.get(box).setVisible(true);
+              break;
+            }
+            pieceInMiddle = true;
+            break;
+        }
+        i++;
+      }
+    }
+    public void deletePosibleMovement(){
+      for (Dot dot : posiblesMovements.values()){
+        dot.setVisible(false);
+      }
     }
     public int beginningBox(int xi, int yi){
       int i = 0;
@@ -209,6 +253,7 @@ public class Board extends JPanel implements ActionListener {
                 isBoxPressed = true;
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
+                posibleMovement(pieces.get(boxPressed));
 
             }else if (isBoxPressed){
                 if(validBox){
@@ -220,13 +265,16 @@ public class Board extends JPanel implements ActionListener {
                       pieces.get(boxPressed).setMove(true);
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
-
                       isBoxPressed = false;
+                      deletePosibleMovement();
                     }else{
                       if(pieces.get(boxPressed).isWhite() == pieces.get(piecePressed).isWhite() && pieces.get(boxPressed).isWhite() == isWhiteTurn){
                         isBoxPressed = true;
                         piecePressed = boxPressed;
                         strokepattern.mousePressed(e);
+                        deletePosibleMovement();
+                        posibleMovement(pieces.get(boxPressed));
+
                       }else{
                         Piece piece2 = pieces.get(piecePressed);
                         pieces.remove(piecePressed);
@@ -237,6 +285,7 @@ public class Board extends JPanel implements ActionListener {
                         isWhiteTurn = !isWhiteTurn;
                         strokepattern.setVisible(false);
                         isBoxPressed = false;
+                        deletePosibleMovement();
                       }
 
                     }
