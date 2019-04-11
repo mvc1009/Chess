@@ -195,7 +195,7 @@ public class Board extends JPanel implements ActionListener {
 
     }
     public void posibleMovement(Piece piece2Move){ //rules
-      int box = piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY());
+      int box = piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY()) + 10;
       int i = 0;
       boolean pieceInMiddle = false;
       while(i < 8){
@@ -207,6 +207,7 @@ public class Board extends JPanel implements ActionListener {
           case QUEEN:
           case PAWN:
             if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+              System.out.println(box);
               posiblesMovements.get(box).setVisible(true);
               break;
             }
