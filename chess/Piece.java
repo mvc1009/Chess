@@ -97,17 +97,18 @@ public class Piece {
       int y = 9;
 
       while(i < 8){
-          if((xi > INITIAL_X + STEP*i) && xi < OUTOFBOUND_X){
+          if((xi >= INITIAL_X + STEP*i) && xi < OUTOFBOUND_X){
             x = i+1;
           }
           if((yi < INITIAL_Y - STEP*i) && yi < OUTOFBOUND_Y){
             y= i+2;
           }
-          else if((yi > INITIAL_Y && yi< OUTOFBOUND_Y)){
+          else if((yi >= INITIAL_Y && yi< OUTOFBOUND_Y)){
             y = 1;
           }
           i++;
       }
+      //System.out.println(x*10+y);
       return x*10 +y;
     }
     /*public int getFutureMove(){
