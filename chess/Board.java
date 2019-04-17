@@ -46,6 +46,7 @@ public class Board extends JPanel implements ActionListener {
 
     HashMap<Integer, Piece> pieces;
     HashMap<Integer, Dot> posiblesMovements;
+    HashMap<Integer, Dot> posiblesMovements2;
     private int boxPressed = 99;
     private int piecePressed = 99;
     private boolean isBoxPressed = false;
@@ -82,6 +83,7 @@ public class Board extends JPanel implements ActionListener {
         Toolkit.getDefaultToolkit().sync();
     }
 
+//**************************    MESA   ******************************
     private void doDrawing(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
@@ -119,14 +121,9 @@ public class Board extends JPanel implements ActionListener {
         updatePieces();
         repaint();
     }
-    private void initialPosiblePositions(){
-      posiblesMovements = new HashMap<Integer, Dot>();
-      for(int i = 0; i <= 8; i++){
-        for(int j = 0; j<= 8; j++){
-          posiblesMovements.put((i*10)+j, new Dot((i*10)+j+1));
-        }
-      }
-    }
+
+//*************************  PIEZAS *******************************************
+
     private void initialPiecesPositions(){
         pieces = new HashMap<Integer,Piece>();
         //White initials:
@@ -167,6 +164,50 @@ public class Board extends JPanel implements ActionListener {
         pieces.put(77, new Pawn(false, 7));
         pieces.put(87, new Pawn(false, 8));
     }
+
+//+++++++++++++++++ POSIBLES POSICIONES ++++++++++++++++++
+//Ponemos un punto en todas las celdas
+    private void initialPosiblePositions(){
+      posiblesMovements = new HashMap<Integer, Dot>();
+      for(int i = 10; i <= 88; i++){
+        if(i%10 != 8){
+          posiblesMovements.put(i, new Dot(i+1));
+        }
+      }
+    }
+    private void pawnPosiblePositions(int box){
+      posiblesMovements.get(box).setVisible(true);
+      posiblesMovements.get(box+1).setVisible(true);
+    }
+
+    private void towerPosiblePositions(int box){
+      //System.out.println(box/10);
+      int initialpos = box/10;
+      for (int k = 0; k<8; k++){
+        if(initialpos*10+k+1 != box){
+          posiblesMovements.get(initialpos*10+k).setVisible(true);
+        }
+      }
+    }
+    private void bishopPosiblePositions(int box){
+      //System.out.println(box/10);
+      int initialpos = box/10;
+      for (int k = initialpos; k<8; k++){
+        //derecha positivos
+        posiblesMovements.get(box+(8-k)*10+(7-k)).setVisible(true);
+        //izquierda negativos
+        if(initialpos!=1){
+        posiblesMovements.get(box+(k-8)*10+(k-9)).setVisible(true);
+        }
+      }
+    }
+//++++++++++++++++++ VISUALICACIÓN +++++++++++++++++
+    public void dotLine(int box,int numDots){
+      for (int k = 1; k<=numDots; k++) {
+        posiblesMovements.get(box+k).setVisible(true);
+      }
+    }
+
     public void updateStroke(){
       if(strokepattern.isVisible()){
         strokepattern.move();
@@ -195,30 +236,22 @@ public class Board extends JPanel implements ActionListener {
 
     }
     public void posibleMovement(Piece piece2Move){ //rules
-      //System.out.println(piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY()));
-      int box = piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY()) + 10;
+      //Esta usando el beginningBox de la clase Piece.
+      int box = piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY()); //Antes sumabas 10
       int i = 0;
       boolean pieceInMiddle = false;
       while(i < 8){
         switch(piece2Move.getType()){
-          case TOWER: if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
-              for(int j = 0; j<=8; j++){
-                Dot dot = new Dot(box+j);
-                dot.setVisible(true);
-              }
+          case TOWER: if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+              towerPosiblePositions(box);
               break;
             }
             //pieceInMiddle = true;
             break;
           case HORSE:
-          case BISHOP:if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
-              System.out.println("me cago en dios: "+box);
-              for(int j = 0; j<=8; j++){
-                Dot dotR = new Dot(box + (11));
-                Dot dotL = new Dot(box + (9));
-                dotR.setVisible(true);
-                dotL.setVisible(true);
-              }
+          case BISHOP:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+              //System.out.println("Bishop: "+box);
+              bishopPosiblePositions(box);
               break;
             }
             //pieceInMiddle = true;
@@ -226,8 +259,8 @@ public class Board extends JPanel implements ActionListener {
           case KING:
           case QUEEN:
           case PAWN: if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
-              System.out.println("Caja pulsada:"+box);
-              posiblesMovements.get(box).setVisible(true);
+              //System.out.println("Pawn: "+box);
+              pawnPosiblePositions(box);
               break;
             }
             //pieceInMiddle = true;
@@ -253,14 +286,18 @@ public class Board extends JPanel implements ActionListener {
           if((yi < INITIAL_Y - STEP*i) && yi < OUTOFBOUND_Y){
             y= i+2;
           }
-          else if(yi > INITIAL_Y && yi< OUTOFBOUND_Y){
+          else if(yi >= INITIAL_Y&& yi< OUTOFBOUND_Y){
             y = 1;
           }
           i++;
       }
       int result = x*10 + y;
+      //System.out.println("r: "+result);
       return result;
     }
+
+//************************ LECTOR MOUSE ***************************************
+
     class HitTestAdapter extends MouseAdapter {
 
         @Override
@@ -268,7 +305,7 @@ public class Board extends JPanel implements ActionListener {
             //.mousePressed(e);
             int x = e.getX();
             int y = e.getY();
-            System.out.println(x + ", " + y);
+            //System.out.println("m"+x + ", " + y);
             boxPressed = beginningBox(x,y);
             boolean validBox = isValidBox(boxPressed);
             if(!isBoxPressed && pieces.containsKey(boxPressed) && pieces.get(boxPressed).isWhite() == isWhiteTurn){
