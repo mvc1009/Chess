@@ -7,7 +7,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-public class Background  extends JPanel{
+public class Background extends JPanel{
 
     protected int width;
     protected int height;
@@ -51,4 +51,5 @@ public class Background  extends JPanel{
       g2d.drawImage(image ,0,0,getWidth(),getHeight(),null);
       setOpaque(false);
     }
+
 }
