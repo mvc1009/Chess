@@ -123,7 +123,7 @@ public class Board extends JPanel implements ActionListener {
       posiblesMovements = new HashMap<Integer, Dot>();
       for(int i = 0; i <= 8; i++){
         for(int j = 0; j<= 8; j++){
-          posiblesMovements.put(i*10+j, new Dot(i*10+j));
+          posiblesMovements.put((i*10)+j, new Dot((i*10)+j+1));
         }
       }
     }
@@ -195,23 +195,42 @@ public class Board extends JPanel implements ActionListener {
 
     }
     public void posibleMovement(Piece piece2Move){ //rules
+      //System.out.println(piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY()));
       int box = piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY()) + 10;
       int i = 0;
       boolean pieceInMiddle = false;
       while(i < 8){
         switch(piece2Move.getType()){
-          case TOWER:
+          case TOWER: if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
+              for(int j = 0; j<=8; j++){
+                Dot dot = new Dot(box+j);
+                dot.setVisible(true);
+              }
+              break;
+            }
+            //pieceInMiddle = true;
+            break;
           case HORSE:
-          case BISHOP:
+          case BISHOP:if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
+              System.out.println("me cago en dios: "+box);
+              for(int j = 0; j<=8; j++){
+                Dot dotR = new Dot(box + (11));
+                Dot dotL = new Dot(box + (9));
+                dotR.setVisible(true);
+                dotL.setVisible(true);
+              }
+              break;
+            }
+            //pieceInMiddle = true;
+            break;
           case KING:
           case QUEEN:
-          case PAWN:
-            if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
-              System.out.println(box);
+          case PAWN: if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
+              System.out.println("Caja pulsada:"+box);
               posiblesMovements.get(box).setVisible(true);
               break;
             }
-            pieceInMiddle = true;
+            //pieceInMiddle = true;
             break;
         }
         i++;
@@ -234,12 +253,13 @@ public class Board extends JPanel implements ActionListener {
           if((yi < INITIAL_Y - STEP*i) && yi < OUTOFBOUND_Y){
             y= i+2;
           }
-          else if((yi > INITIAL_Y && yi< OUTOFBOUND_Y)){
+          else if(yi > INITIAL_Y && yi< OUTOFBOUND_Y){
             y = 1;
           }
           i++;
       }
-      return x*10 +y;
+      int result = x*10 + y;
+      return result;
     }
     class HitTestAdapter extends MouseAdapter {
 
@@ -248,6 +268,7 @@ public class Board extends JPanel implements ActionListener {
             //.mousePressed(e);
             int x = e.getX();
             int y = e.getY();
+            System.out.println(x + ", " + y);
             boxPressed = beginningBox(x,y);
             boolean validBox = isValidBox(boxPressed);
             if(!isBoxPressed && pieces.containsKey(boxPressed) && pieces.get(boxPressed).isWhite() == isWhiteTurn){
