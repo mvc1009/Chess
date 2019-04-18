@@ -406,17 +406,17 @@ public class Board extends JPanel implements ActionListener {
 
     class HitTestAdapter extends MouseAdapter {
         int firstPressed = 99;
-        boolean isValid = true;
         @Override
         public void mousePressed(MouseEvent e) {
             //.mousePressed(e);
             int x = e.getX();
             int y = e.getY();
+            boolean isValid = false;
             boxPressed = beginningBox(x,y);
-            System.out.println("primero " + boxPressed);
+            //System.out.println("primero " + boxPressed);
             boolean validBox = isValidBox(boxPressed);
 
-            if(firstPressed != 99){
+            if(firstPressed != 99 && pieces.containsKey(firstPressed)){
               isValid = validMove(pieces.get(firstPressed).getType(),
                                   pieces.get(firstPressed).getColor(),
                                   boxPressed, firstPressed);
@@ -428,15 +428,13 @@ public class Board extends JPanel implements ActionListener {
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
                 posibleMovement(pieces.get(boxPressed));
-                System.out.println("segundo " + boxPressed);
+                //System.out.println("segundo " + boxPressed);
 
 // Escojemos donde mover dicha Ficha
               }else if (isBoxPressed && isValid){
-              System.out.println("Despues del if: " + boxPressed);
+              //System.out.println("Despues del if: " + boxPressed);
                 if(validBox){
-                  System.out.println(boxPressed);
                     if(!pieces.containsKey(boxPressed)){      // No esta la pieza en el HashMap
-                      System.out.println(boxPressed);
                       Piece piece2 = pieces.get(piecePressed);
                       pieces.remove(piecePressed);            // Eliminamos la ficha que reponemos
                       pieces.put(boxPressed, piece2);         // Añadimos la nueva pieza
@@ -471,10 +469,9 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }
             }
-            System.out.println("He pasado");
             firstPressed = boxPressed;
         }
-
+// ************************** NORMAS DE JUEGO **********************************
         public boolean validMove(int type, boolean color, int box2, int box1){
           //Escojer otras fichas de otro color
           if(pieces.containsKey(box2) && pieces.get(box1).isWhite() == pieces.get(box1).isWhite() && pieces.get(box1).isWhite() == isWhiteTurn){
@@ -483,12 +480,28 @@ public class Board extends JPanel implements ActionListener {
           else{
           switch(type){
             case TOWER:
+              int initialpos = box1/10;
+              for (int k = 1; k<=8; k++){
+                if(initialpos*10+k == box2){
+                  return true;
+                }
+              }
               break;
             case HORSE:
+              if(box2 == box1+12 || box2 == box1-8 || box2 == box1+21 ||
+                    box2 == box1-19 || box2 == box1+8 || box2 == box1-12 ||
+                    box2 == box1+19 || box2 == box1-21){
+                      return true;
+              }
               break;
             case BISHOP:
               break;
             case KING:
+              if(box2 == box1+1 || box2 == box1+10 || box2 == box1+11 ||
+                box2 == box1-9 || box2 == box1-10 || box2 == box1-11 ||
+                box2 == box1-1 || box2 == box1+9){
+                  return true;
+              }
               break;
             case QUEEN:
               break;
