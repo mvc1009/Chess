@@ -48,6 +48,10 @@ public class Piece {
     public int getType(){
       return type;
     }
+    public boolean getColor(){
+      return color;
+    }
+
     protected void loadImage(String imageName) {
 
         ImageIcon ii = new ImageIcon(imageName);
@@ -111,6 +115,8 @@ public class Piece {
       //System.out.println(x*10+y);
       return x*10 +y;
     }
+
+
     /*public int getFutureMove(){
       return futureMove;
     }

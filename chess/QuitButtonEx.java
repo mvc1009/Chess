@@ -90,7 +90,10 @@ public class QuitButtonEx extends JPanel implements ActionListener{
     }
 
     public static void main(String[] args) {
-          QuitButtonEx ex = new QuitButtonEx();
-          ex.setVisible(true);
+    //      QuitButtonEx ex = new QuitButtonEx();
+    //      ex.setVisible(true);
+          //Borrar las dos lineas a continuación, descomentar lo anterior.
+          ChessGame chess = new ChessGame();
+          chess.startGame();
     }
 }
