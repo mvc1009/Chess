@@ -23,7 +23,7 @@ public class ChessGame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public static void main(String[] args) {
+    public void startGame() {
         EventQueue.invokeLater(() -> {
             ChessGame ex = new ChessGame();
             ex.setVisible(true);
