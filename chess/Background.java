@@ -7,7 +7,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-public class Background extends JPanel{
+public class Background {//extends JPanel{
 
     protected int width;
     protected int height;
@@ -37,7 +37,7 @@ public class Background extends JPanel{
         return image;
     }
 
-    @Override
+    /*@Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -50,6 +50,6 @@ public class Background extends JPanel{
       Graphics2D g2d = (Graphics2D) g;
       g2d.drawImage(image ,0,0,getWidth(),getHeight(),null);
       setOpaque(false);
-    }
+    }*/
 
 }
