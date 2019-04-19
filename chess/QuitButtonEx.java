@@ -4,8 +4,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.BorderLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,16 +18,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.AbstractButton;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import java.awt.Rectangle;
 
 public class QuitButtonEx extends JPanel implements ActionListener{
-    private Background background;
+    private Background panel;
+    private ChessLetters title;
 
     public QuitButtonEx(){
         initMenu();
     }
 
     private void initMenu() {
-      background = new Background();
+      panel = new Background();
+      title = new ChessLetters();
       menu();
     }
 
@@ -35,65 +42,89 @@ public class QuitButtonEx extends JPanel implements ActionListener{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        paintBackground(g);
+        doDrawing(g);
+
+
 
         Toolkit.getDefaultToolkit().sync();
     }
 
     private void menu() {
-      JFrame menu = new JFrame("SAD Chess Menue");
-      menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-      menu.setLayout(new BorderLayout());
 
-      // PANEL
-      JPanel panel = new JPanel();
-      panel.setSize(new Dimension(350,55));
-      panel.setLocation(500,300);
 
-      JButton quitButton = new JButton("Quit");
-      JButton playButton = new JButton("PLAY: SAD loser and a Winer");
-      playButton.setVerticalTextPosition(AbstractButton.CENTER);
-      playButton.setHorizontalTextPosition(AbstractButton.LEADING);
-      quitButton.setVerticalTextPosition(AbstractButton.BOTTOM);
-      quitButton.setHorizontalTextPosition(AbstractButton.CENTER);
+      //BUTTONS
 
-      quitButton.addActionListener((event) -> System.exit(0));
+      JButton playButton = new JButton(new ImageIcon("multimedia/play.png"));
+      playButton.setOpaque(false);
+      playButton.setContentAreaFilled(false);
+      playButton.setPreferredSize(new Dimension(50, 50));
+      playButton.setBorder(null);
+      playButton.setBorderPainted(false);
+      playButton.setLocation(1000,500);
       playButton.setActionCommand("PLAY");
       playButton.addActionListener(this);
 
-      JLabel texto = new JLabel("Chess game,choose your option: ");
-      texto.setBounds(50,50,220,40);
+      JButton quitButton = new JButton(new ImageIcon("multimedia/quit.png"));
+      quitButton.setOpaque(false);
+      quitButton.setContentAreaFilled(false);
+      quitButton.setBorderPainted(false);
+      quitButton.setPreferredSize(new Dimension(50, 50));
+      quitButton.setBorder(null);
+      quitButton.setBorderPainted(false);
+      quitButton.setLocation(0,0);
+      quitButton.addActionListener((event) -> System.exit(0));
 
-      panel.add(texto);
-      panel.add(playButton);
-      panel.add(quitButton);
-      menu.add(panel);
+      //Adding Buttons to QuitButtons JPanel
+      this.setLayout(null);
+      this.setSize(1200,700);
+      this.add(playButton);
+      this.add(quitButton);
 
-      menu.add(background);
-      menu.setSize(1600,800);
+      //Fixing all JPanels
+
+      JPanel final = new JPanel(new BorderLayout());
+      final.add(this, BorderLayout.CENTER);
+
+      //Fixing menu JFrame
+
+      JFrame menu = new JFrame();
+      menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      menu.add(final);
+      menu.setSize(1200,700);
       menu.setVisible(true);
+      menu.setResizable(false);
+      menu.setTitle("Main Menu");
+      menu.setLocationRelativeTo(null);
+      menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e){
         if ("PLAY".equals(e.getActionCommand())){
-        ChessGame chess = new ChessGame();
-        chess.startGame();
+          ChessGame chess = new ChessGame();
+          chess.startGame();
         }
-        else{}
     }
 
-    public void paintBackground(Graphics g){
-      Graphics2D m2d = (Graphics2D) g;
-      m2d.drawImage(background.getImage(),0,0,this);
+    public void doDrawing(Graphics g){
+      Graphics2D g2d = (Graphics2D) g;
+      g2d.drawImage(panel.getImage(),0,0,this);
+      g2d.drawImage(title.getImage(),50,50,this);
+
+      g2d.setColor(Color.BLACK);
+      Font small = new Font("Calibri",Font.BOLD, 25);
+      FontMetrics fm = getFontMetrics(small);
+      g2d.setFont(small);
+      g2d.drawString("Choose your Option: ", 200,200);
     }
 
     public static void main(String[] args) {
-    //      QuitButtonEx ex = new QuitButtonEx();
-    //      ex.setVisible(true);
+          QuitButtonEx ex = new QuitButtonEx();
+          ex.setVisible(true);
           //Borrar las dos lineas a continuación, descomentar lo anterior.
-          ChessGame chess = new ChessGame();
-          chess.startGame();
+          //ChessGame chess = new ChessGame();
+          //chess.startGame();
     }
 }
