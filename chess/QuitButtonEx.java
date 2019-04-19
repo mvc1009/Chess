@@ -41,11 +41,7 @@ public class QuitButtonEx extends JPanel implements ActionListener{
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         doDrawing(g);
-
-
-
         Toolkit.getDefaultToolkit().sync();
     }
 
@@ -58,10 +54,9 @@ public class QuitButtonEx extends JPanel implements ActionListener{
       JButton playButton = new JButton(new ImageIcon("multimedia/play.png"));
       playButton.setOpaque(false);
       playButton.setContentAreaFilled(false);
-      playButton.setPreferredSize(new Dimension(50, 50));
-      playButton.setBorder(null);
       playButton.setBorderPainted(false);
-      playButton.setLocation(1000,500);
+      playButton.setBorder(null);
+      playButton.setBounds(480,250,60,60);
       playButton.setActionCommand("PLAY");
       playButton.addActionListener(this);
 
@@ -69,28 +64,23 @@ public class QuitButtonEx extends JPanel implements ActionListener{
       quitButton.setOpaque(false);
       quitButton.setContentAreaFilled(false);
       quitButton.setBorderPainted(false);
-      quitButton.setPreferredSize(new Dimension(50, 50));
       quitButton.setBorder(null);
-      quitButton.setBorderPainted(false);
-      quitButton.setLocation(0,0);
+      quitButton.setBounds(660,250,60,60);
       quitButton.addActionListener((event) -> System.exit(0));
 
       //Adding Buttons to QuitButtons JPanel
       this.setLayout(null);
-      this.setSize(1200,700);
+      //this.setSize(180,60);
       this.add(playButton);
       this.add(quitButton);
 
-      //Fixing all JPanels
 
-      JPanel final = new JPanel(new BorderLayout());
-      final.add(this, BorderLayout.CENTER);
 
       //Fixing menu JFrame
 
       JFrame menu = new JFrame();
       menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      menu.add(final);
+      menu.add(this);
       menu.setSize(1200,700);
       menu.setVisible(true);
       menu.setResizable(false);
