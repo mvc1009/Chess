@@ -195,32 +195,58 @@ public class Board extends JPanel implements ActionListener {
       }
     }
 
-    private void bishopPosiblePositions(int box, boolean color){
-      //Primera fila, donde va el primer punto
-      int dot_x = box/10;
-      int dot_y = box%10;
-      int x = dot_x;
-      int y = dot_y;
-      int xneg = box/10;
-      int yneg = box%10;
-      int pos = 1;
-      while(x <= 8 || y <= 8){
-        // positivos
-        if(x < 8 && y < 8){
-          posiblesMovements.get(box + pos*10 + pos*1).setVisible(true);
-          posiblesMovements.get(box - pos*10 + pos*1).setVisible(true);
+    private void bishopPosiblePositions(int box){
+
+      //sin fichas entre medio
+      int x = box/10;
+      int y = box%10;
+      boolean pieceInMiddleUPRIGHT = false;
+      boolean pieceInMiddleDOWNRIGHT = false;
+      boolean pieceInMiddleUPLEFT = false;
+      boolean pieceInMiddleDOWNLEFT = false;
+
+      for(int i = 0; i < 8 ; i++){
+        //UP & RIGHT
+        if(x+i < 8 && y+i < 8 && !pieceInMiddleUPRIGHT){
+          if(validDot(box + (i+1)*10 + (i+1), pieces.get(box).getColor()){
+            posiblesMovements.get(box + (i+1)*10 + (i+1)).setVisible(true);
+          }else{
+            pieceInMiddleUPRIGHT = true;
+          }
         }
-        //negativos
-        if(dot_y != 1 && xneg > 1 && yneg > 1){
-          posiblesMovements.get(box - pos*10 - pos*1).setVisible(true);
-          posiblesMovements.get(box + pos*10 - pos*1).setVisible(true);
-          xneg--;
-          yneg--;
+        //UP & LEFT
+        if(x-i > 1 && y+i < 8 && !pieceInMiddleUPLEFT){
+          if(validDot(box - (i+1)*10 + (i+1), pieces.get(box).getColor()){
+            posiblesMovements.get(box - (i+1)*10 + (i+1)).setVisible(true);
+          }else{
+            pieceInMiddleUPLEFT = true;
+          }
         }
-        x++;
-        y++;
-        pos++;
+        //DOWN & RIGHT
+        if(x+i < 8 && y-i > 1 && !pieceInMiddleDOWNRIGHT){
+          if(validDot(box + (i+1)*10 - (i+1), pieces.get(box).getColor()){
+            posiblesMovements.get(box + (i+1)*10 - (i+1)).setVisible(true);
+          }else{
+            pieceInMiddleDOWNRIGHT = true;
+          }
+
+        }
+        //DOWN & LEFT
+        if(x-i > 1 && y-i > 1 && pieceInMiddleDOWNLEFT ){
+          if(validDot(box - (i+1)*10 - (i+1), pieces.get(box).getColor()){
+            posiblesMovements.get(box - (i+1)*10 - (i+1)).setVisible(true);
+          }else{
+            pieceInMiddleDOWNLEFT = true;
+          }
+        }
+
       }
+
+
+
+
+
+
     }
 
     private void horsePosiblePositions(int box, boolean color){
@@ -417,9 +443,7 @@ public class Board extends JPanel implements ActionListener {
             boolean validBox = isValidBox(boxPressed);
 
             if(firstPressed != 99 && pieces.containsKey(firstPressed)){
-              isValid = validMove(pieces.get(firstPressed).getType(),
-                                  pieces.get(firstPressed).getColor(),
-                                  boxPressed, firstPressed);
+              isValid = validMove(boxPressed,firstPressed, posiblesMovements);
             }
 
 // Escojemos la Ficha a mover:
@@ -472,13 +496,23 @@ public class Board extends JPanel implements ActionListener {
             firstPressed = boxPressed;
         }
 // ************************** NORMAS DE JUEGO **********************************
-        public boolean validMove(int type, boolean color, int box2, int box1){
-          //Escojer otras fichas de otro color
-          if(pieces.containsKey(box2) && pieces.get(box1).isWhite() == pieces.get(box1).isWhite() && pieces.get(box1).isWhite() == isWhiteTurn){
+        public boolean validMove(int box, int box1, HashMap<Integer, Dot> moves){
+
+          if(moves.get(box).isVisible()){
+            return true;
+          }
+          else if(pieces.containsKey(box) && pieces.get(box1).isWhite() == pieces.get(box1).isWhite() && pieces.get(box1).isWhite() == isWhiteTurn){
               return true;
           }
-          else{
-          switch(type){
+          return false;
+
+
+          //Escojer otras fichas de otro color
+
+
+
+  /*        else{
+  /*        switch(type){
             case TOWER:
               int initialpos = box1/10;
               for (int k = 1; k<=8; k++){
@@ -519,7 +553,11 @@ public class Board extends JPanel implements ActionListener {
               //break;
           }
           }
-          return false;
+          return false;*/
+
+
+
+
         }
     }
 }
