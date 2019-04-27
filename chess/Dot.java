@@ -36,7 +36,7 @@ public class Dot {
       else if(box==10){
         this.x= STEP*(((box)/10)) + INITIAL_X;
       }
-      
+
       this.y = INITIAL_Y - STEP*((box-1)%10);
     }
     protected void loadImage(String imageName) {
@@ -49,6 +49,10 @@ public class Dot {
 
         width = image.getWidth(null);
         height = image.getHeight(null);
+    }
+
+    public int getBox(){
+        return box;
     }
 
     public Image getImage() {
