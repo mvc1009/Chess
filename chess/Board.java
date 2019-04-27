@@ -102,6 +102,14 @@ public class Board extends JPanel implements ActionListener {
         }
 
         //TURN LABEL
+        if(check){
+          String msgCheck = "CHECK";
+          g2d.setColor(Color.BLUE);
+          Font small = new Font("Calibri",Font.BOLD, 25);
+          FontMetrics fm = getFontMetrics(small);
+          g2d.setFont(small);
+          g2d.drawString(msgCheck, 425,32);
+        }
         if(!checkMate){
           for(Dot dot : posiblesMovements.values()){
               if(dot.isVisible()){
@@ -366,44 +374,61 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void kingPosiblePositions(int box){
-      if( validDot(box+10, pieces.get(box).getColor()) ){
+      if( validDot(box+10, pieces.get(box).getColor()) && goodMovement(pieces, pieces.get(box),box+10) ){
         posiblesMovements.get(box + 10).setVisible(true);
         shortcastling = false;
         if(!pieces.get(box).isMoved() && pieces.containsKey(box + 30) &&
-            pieces.get(box+30).getType() == TOWER && !pieces.get(box+30).isMoved()){
+            pieces.get(box+30).getType() == TOWER && !pieces.get(box+30).isMoved() && goodMovement(pieces,pieces.get(box),box+20)){
           posiblesMovements.get(box + 20).setVisible(true);
           shortcastling = true;
         }
       }
-      if( validDot(box-10, pieces.get(box).getColor()) ){
+      if( validDot(box-10, pieces.get(box).getColor())&& goodMovement(pieces,pieces.get(box),box-10) ){
         posiblesMovements.get(box - 10).setVisible(true);
         largecastling = false;
         if(!pieces.get(box).isMoved() && pieces.containsKey(box - 40) &&
-            pieces.get(box-40).getType() == TOWER && !pieces.get(box-40).isMoved()){
+            pieces.get(box-40).getType() == TOWER && !pieces.get(box-40).isMoved()&& goodMovement(pieces,pieces.get(box),box-20)&& goodMovement(pieces,pieces.get(box),box-30)){
           posiblesMovements.get(box - 20).setVisible(true);
           largecastling = true;
         }
       }
       if(box%10 < 8){  //Puntos superiores
-        if( validDot(box+1, pieces.get(box).getColor()) )
+        if( validDot(box+1, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box+1))
           posiblesMovements.get(box + 1).setVisible(true);
-        if( validDot(box+11, pieces.get(box).getColor()) )
+        if( validDot(box+11, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box+11))
           posiblesMovements.get(box + 11).setVisible(true);
-        if( validDot(box-9, pieces.get(box).getColor()) )
+        if( validDot(box-9, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box-9))
           posiblesMovements.get(box - 9).setVisible(true);
       }
       if(box%10 > 1){  //Puntos inferiores
-        if( validDot(box+9, pieces.get(box).getColor()) )
+        if( validDot(box+9, pieces.get(box).getColor())&& goodMovement(pieces,pieces.get(box),box+9) )
           posiblesMovements.get(box + 9).setVisible(true);
-        if( validDot(box-1, pieces.get(box).getColor()) )
+        if( validDot(box-1, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box-1))
           posiblesMovements.get(box - 1).setVisible(true);
-        if( validDot(box-11, pieces.get(box).getColor()) )
+        if( validDot(box-11, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box-11))
           posiblesMovements.get(box - 11).setVisible(true);
       }
 
       if(check && posiblesMovements.size() == 0){
         checkMate = true;
       }
+    }
+    public boolean goodMovement(HashMap<Integer, Piece> pieces, Piece piece, int box){
+      posibleMovement(piece, box);
+      HashMap<Integer, Dot> posbm = posiblesMovements;
+      for(Dot dot : posbm.values()){
+        for(Piece pie : pieces.values()){
+          if(pie.getColor() != piece.getColor()){
+            posibleMovement(pie, pie.beginningBox(pie.getX(),pie.getY()));
+            if(dot.isVisible() && posiblesMovements.containsKey(dot.getBox())){
+              posiblesMovements = posbm;
+              return false;
+            }
+          }
+        }
+      }
+      posiblesMovements = posbm;
+      return true;
     }
 
 //++++++++++++++++++ VISUALICACIÓN RECUADRO +++++++++++++++++
@@ -429,46 +454,41 @@ public class Board extends JPanel implements ActionListener {
 
     //++++++++++++++++++++++ VISUALICACIÓN PUNTOS ++++++++++++++++++++++++++++
 
-    public void posibleMovement(Piece piece2Move){ //rules
+    public void posibleMovement(Piece piece2Move, int box){ //rules
       //Esta usando el beginningBox de la clase Piece.
-      int box = piece2Move.beginningBox(piece2Move.getX(), piece2Move.getY()); //Antes sumabas 10
       int i = 0;
-      boolean pieceInMiddle = false;
       while(i < 8){
         switch(piece2Move.getType()){
-          case TOWER: if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+          case TOWER: if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1)){
               towerPosiblePositions(box);
               break;
             }
-            //pieceInMiddle = true;
             break;
-          case HORSE:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+          case HORSE:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1)){
               horsePosiblePositions(box);
               break;
             }
             break;
-          case BISHOP:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+          case BISHOP:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1)){
               bishopPosiblePositions(box);
               break;
             }
-            //pieceInMiddle = true;
             break;
-          case KING:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
+          case KING:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1)){
               kingPosiblePositions(box);
               break;
             }
             break;
-          case QUEEN:if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
+          case QUEEN:if(!pieces.containsKey(((box+(box%10)+i)%8)+1)){
               towerPosiblePositions(box);
               bishopPosiblePositions(box);
               break;
             }
             break;
-          case PAWN: if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
+          case PAWN: if(!pieces.containsKey(((box+(box%10)+i)%8)+1)){
               pawnPosiblePositions(box, piece2Move.getColor());
               break;
             }
-            //pieceInMiddle = true;
             break;
         }
         i++;
@@ -536,7 +556,7 @@ public class Board extends JPanel implements ActionListener {
                 isBoxPressed = true;
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
-                posibleMovement(pieces.get(boxPressed));
+                posibleMovement(pieces.get(piecePressed),boxPressed);
                 //System.out.println("segundo " + boxPressed);
 
 // Escojemos donde mover dicha Ficha
@@ -549,8 +569,11 @@ public class Board extends JPanel implements ActionListener {
                       pieces.put(boxPressed, piece2);         // Añadimos la nueva pieza
                       pieces.get(boxPressed).mousePressed(e); // Nueva posición de la pieza
                       pieces.get(boxPressed).setMove(true);   // Finalización del movimiento
-                      isCheck(posiblesMovements, pieces);
                       castling();
+                      deletePosibleMovement();
+                      posibleMovement(pieces.get(boxPressed) , boxPressed);
+                      isCheck(posiblesMovements, pieces);
+
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
                       isBoxPressed = false;
@@ -562,7 +585,7 @@ public class Board extends JPanel implements ActionListener {
                         piecePressed = boxPressed;
                         strokepattern.mousePressed(e);
                         deletePosibleMovement();
-                        posibleMovement(pieces.get(boxPressed));
+                        posibleMovement(pieces.get(piecePressed), boxPressed);
 
                       // Es una caja donde hay una pieza negra y es turno de las Negras
                       }else{
@@ -573,14 +596,16 @@ public class Board extends JPanel implements ActionListener {
                         pieces.get(boxPressed).mousePressed(e);
                         pieces.get(boxPressed).setMove(true);
                         isWhiteTurn = !isWhiteTurn;
+                        deletePosibleMovement();
+                        posibleMovement(pieces.get(boxPressed), boxPressed);
                         isCheck(posiblesMovements, pieces);
+
                         strokepattern.setVisible(false);
                         isBoxPressed = false;
                         deletePosibleMovement();
                       }
                     }
                     //System.out.println(firstPressed);
-                    System.out.println(boxPressed);
                     //Peon llega al final:
                     if(pieces.get(boxPressed).getType()==PAWN && (boxPressed%10 == 8 | boxPressed%10 == 1) ){
                         turnInToPiece(boxPressed);
@@ -602,10 +627,20 @@ public class Board extends JPanel implements ActionListener {
 
         public void isCheck(HashMap<Integer, Dot> posib, HashMap<Integer, Piece> pieces){
           for (Dot dot: posib.values()){
-            if(pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
+
+            if(dot.isVisible() && pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
               check = true;
+              System.out.print(dot.getBox() + " ");
+              System.out.println("JAQUE");
+              break;
+            }else if (dot.isVisible()){
+              check = false;
+              System.out.print(dot.getBox() + " ");
+              System.out.println("NO JAQUE");
+
             }
           }
+          System.out.println("----------------------");
         }
 
         public void castling(){

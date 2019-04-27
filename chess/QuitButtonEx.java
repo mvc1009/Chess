@@ -86,8 +86,6 @@ public class QuitButtonEx extends JPanel implements ActionListener{
       menu.setResizable(false);
       menu.setTitle("Main Menu");
       menu.setLocationRelativeTo(null);
-      menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
 
     @Override
