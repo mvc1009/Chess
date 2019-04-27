@@ -538,12 +538,12 @@ public class Board extends JPanel implements ActionListener {
     private void showOptions(boolean colorPiece){
       JFrame choices = new JFrame();
 
-      JButton queenButton = new JButton(new ImageIcon("multimedia/pieces/white_queen.png"));
-      queenButton.setOpaque(false);
-      queenButton.setContentAreaFilled(false);
+      JButton queenButton = new JButton(new ImageIcon("multimedia/pieces/white_queen_center.png"));
+      queenButton.setOpaque(true);
+      queenButton.setContentAreaFilled(true);
       queenButton.setBorderPainted(false);
       queenButton.setBorder(null);
-      queenButton.setBounds(100, 100 , 60, 60);
+      queenButton.setBounds(0, 0 , 60, 60);
       queenButton.setActionCommand("QUEEN");
       queenButton.addActionListener(this);
 
@@ -554,7 +554,7 @@ public class Board extends JPanel implements ActionListener {
       panel.setVisible(true);
 
       JLabel texto = new JLabel ("Choose which piece to change for the pawn");
-      texto.setBounds(50, 50, 400, 40);
+      texto.setBounds(50, 50, 300, 40);
 
       //Adding Buttons to QuitButtons JPanel
       //choices.setLayout(null);
@@ -619,6 +619,7 @@ public class Board extends JPanel implements ActionListener {
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
                 posibleMovement(pieces.get(boxPressed));
+                turnInToPiece(boxPressed);
                 //System.out.println("segundo " + boxPressed);
 
 // Escojemos donde mover dicha Ficha
