@@ -628,13 +628,15 @@ public class Board extends JPanel implements ActionListener {
         }
 
 
-        public void turnInToPiece(int boxfin){
+        public void turnInToPiece(int boxend){
           //Dar a elejir al jugador en que pieza quiere convertir su peon.
-          private boolean canChoose = false;
+          boolean canChoose = false;
+          boolean colorPiece = pieces.get(boxend).getColor();
 
-          pieces.remove(boxfin);
-          pieces.put(boxfin, new Queen(true));
-          pieces.get(boxfin).setMove( pieces.get(boxfin).getColor() );
+          pieces.remove(boxend);
+          pieces.put(boxend, new Queen(colorPiece));
+          pieces.get(boxend).setMove(true);
+          pieces.get(boxend).moveToBox(boxend);
         }
 
     }
