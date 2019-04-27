@@ -47,10 +47,7 @@ public class QuitButtonEx extends JPanel implements ActionListener{
 
     private void menu() {
 
-
-
       //BUTTONS
-
       JButton playButton = new JButton(new ImageIcon("multimedia/play.png"));
       playButton.setOpaque(false);
       playButton.setContentAreaFilled(false);
@@ -73,8 +70,6 @@ public class QuitButtonEx extends JPanel implements ActionListener{
       //this.setSize(180,60);
       this.add(playButton);
       this.add(quitButton);
-
-
 
       //Fixing menu JFrame
 

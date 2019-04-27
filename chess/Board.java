@@ -3,6 +3,8 @@ package chess;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +13,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.Timer;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -55,6 +60,9 @@ public class Board extends JPanel implements ActionListener {
 
     private boolean check = false;
     private boolean checkMate = false;
+    private boolean pawnInChangingPosition = false;
+
+    private Tower torre;
 
 
     public Board() {
@@ -101,6 +109,7 @@ public class Board extends JPanel implements ActionListener {
             g2d.drawImage(piece.getImage(), piece.getX(), piece.getY(), this);
         }
 
+
         //TURN LABEL
         if(!checkMate){
           for(Dot dot : posiblesMovements.values()){
@@ -121,6 +130,19 @@ public class Board extends JPanel implements ActionListener {
           FontMetrics fm = getFontMetrics(small);
           g2d.setFont(small);
           g2d.drawString(msg, 1025,32);
+        }
+
+        //When the pawn hits the las position it can turn into another piece:
+        if(pawnInChangingPosition){
+          String msg = "Turn the pawn into a:";
+          String msg2= "(Press: q, b, h, t)";
+          g2d.setColor(Color.BLACK);
+          Font small = new Font("Calibri",Font.BOLD, 25);
+          FontMetrics fm = getFontMetrics(small);
+          g2d.setFont(small);
+          g2d.drawString(msg, OUTOFBOUND_X + STEP/2, OUTOFBOUND_Y/8 );
+          g2d.drawString(msg2, OUTOFBOUND_X + STEP/2, OUTOFBOUND_Y/8 + STEP/2);
+
         }
     }
 
@@ -512,6 +534,60 @@ public class Board extends JPanel implements ActionListener {
       return true;
     }
 
+    private void showOptions(boolean colorPiece){
+      JFrame choices = new JFrame();
+      choices.setLayout(null);
+
+      JButton queenButton = new JButton(new ImageIcon("multimedia/pieces/white_queen.png"));
+      queenButton.setOpaque(false);
+      queenButton.setContentAreaFilled(false);
+      queenButton.setBorderPainted(false);
+      queenButton.setBorder(null);
+      queenButton.setBounds(100, 100 , 400, 100);
+      queenButton.setActionCommand("QUEEN");
+      queenButton.addActionListener(this);
+
+      JLabel texto = new JLabel ("Choose which piece to change for the pawn");
+      texto.setBounds(50, 50, 400, 40);
+
+      //Adding Buttons to QuitButtons JPanel
+      //choices.setLayout(null);
+      choices.add(queenButton);
+      choices.add(texto);
+      //this.add(quitButton);
+
+      //choices.add(this);
+      choices.setSize(OUTOFBOUND_X,OUTOFBOUND_Y);
+      choices.setVisible(true);
+      //choices.setResizable(false);
+      choices.setTitle("Turn pawn into");
+      choices.setLocationRelativeTo(null);
+
+
+
+
+/*        pieces.put(91, new Queen(colorPiece));
+      pieces.get(91).setMove(true);
+      pieces.get(91).moveToShow(OUTOFBOUND_X+ STEP, 2*OUTOFBOUND_Y/8 );
+      pieces.get(91).move();
+
+      pieces.put(92, new Bishop(colorPiece, true));
+      pieces.get(92).setMove(true);
+      pieces.get(92).moveToShow(OUTOFBOUND_X+ STEP, 3*OUTOFBOUND_Y/8 );
+      pieces.get(92).move();
+
+      pieces.put(93, new Horse(colorPiece, true));
+      pieces.get(93).setMove(true);
+      pieces.get(93).moveToShow(OUTOFBOUND_X+ STEP, 4*OUTOFBOUND_Y/8 );
+      pieces.get(93).move();
+
+      pieces.put(94, new Tower(colorPiece, true));
+      pieces.get(94).setMove(true);
+      pieces.get(94).moveToShow(OUTOFBOUND_X+ STEP, 5*OUTOFBOUND_Y/8 );
+      pieces.get(94).move();
+*/
+    }
+
 //************************ LECTOR MOUSE ***************************************
 
     class HitTestAdapter extends MouseAdapter {
@@ -579,8 +655,6 @@ public class Board extends JPanel implements ActionListener {
                         deletePosibleMovement();
                       }
                     }
-                    //System.out.println(firstPressed);
-                    System.out.println(boxPressed);
                     //Peon llega al final:
                     if(pieces.get(boxPressed).getType()==PAWN && (boxPressed%10 == 8 | boxPressed%10 == 1) ){
                         turnInToPiece(boxPressed);
@@ -602,8 +676,12 @@ public class Board extends JPanel implements ActionListener {
 
         public void isCheck(HashMap<Integer, Dot> posib, HashMap<Integer, Piece> pieces){
           for (Dot dot: posib.values()){
-            if(pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
+            if(dot.isVisible() && pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
               check = true;
+              break;
+            }
+            else{
+              check = false;
             }
           }
         }
@@ -630,14 +708,23 @@ public class Board extends JPanel implements ActionListener {
 
         public void turnInToPiece(int boxend){
           //Dar a elejir al jugador en que pieza quiere convertir su peon.
-          boolean canChoose = false;
-          boolean colorPiece = pieces.get(boxend).getColor();
+          boolean pawnInChangingPosition = true;
+          int type = 0;
+
+          showOptions(pieces.get(boxend).getColor());
 
           pieces.remove(boxend);
-          pieces.put(boxend, new Queen(colorPiece));
-          pieces.get(boxend).setMove(true);
-          pieces.get(boxend).moveToBox(boxend);
+          switch(type){
+            case TOWER:
+            case HORSE:
+            case BISHOP:
+            case QUEEN:
+          }
+          //pieces.put(boxend, new Queen(colorPiece));
+          //pieces.get(boxend).setMove(true);
+          //pieces.get(boxend).moveToBox(boxend);
         }
+
 
     }
 }
