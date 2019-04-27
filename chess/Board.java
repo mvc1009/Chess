@@ -583,11 +583,6 @@ public class Board extends JPanel implements ActionListener {
                     System.out.println(boxPressed);
                     //Peon llega al final:
                     if(pieces.get(boxPressed).getType()==PAWN && (boxPressed%10 == 8 | boxPressed%10 == 1) ){
-                      System.out.println("hola amiguis");
-                      if(pieces.get(boxPressed).getColor() ) //blanca
-                        System.out.println("hola amiguis blanco");
-                        turnInToPiece(boxPressed);
-                      if(pieces.get(boxPressed).getColor()==false ) //negra
                         turnInToPiece(boxPressed);
                     }
                 }
@@ -633,11 +628,13 @@ public class Board extends JPanel implements ActionListener {
         }
 
 
-        public void turnInToPiece(int box8){
+        public void turnInToPiece(int boxfin){
           //Dar a elejir al jugador en que pieza quiere convertir su peon.
-          pieces.remove(box8);
-          pieces.put(box8, new Queen(true));
-          pieces.get(box8).setMove(true);
+          private boolean canChoose = false;
+
+          pieces.remove(boxfin);
+          pieces.put(boxfin, new Queen(true));
+          pieces.get(boxfin).setMove( pieces.get(boxfin).getColor() );
         }
 
     }
