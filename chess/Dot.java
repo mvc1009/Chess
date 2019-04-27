@@ -36,7 +36,7 @@ public class Dot {
       else if(box==10){
         this.x= STEP*(((box)/10)) + INITIAL_X;
       }
-      
+
       this.y = INITIAL_Y - STEP*((box-1)%10);
     }
     protected void loadImage(String imageName) {
@@ -69,5 +69,8 @@ public class Dot {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+    public int getBox(){
+      return box;
     }
 }

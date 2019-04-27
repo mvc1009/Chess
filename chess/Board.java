@@ -53,6 +53,9 @@ public class Board extends JPanel implements ActionListener {
     private boolean largecastling = false;
     private boolean shortcastling = false;
 
+    private boolean check = false;
+    private boolean checkMate = false;
+
 
     public Board() {
 
@@ -103,18 +106,20 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         //TURN LABEL
-        String msg = "Turn: ";
-        if(isWhiteTurn){
-          msg = msg + "WHITE";
-          g2d.setColor(Color.WHITE);
-        }else{
-          msg = msg + "BLACK";
-          g2d.setColor(Color.BLACK);
+        if(!checkMate){
+          String msg = "Turn: ";
+          if(isWhiteTurn){
+            msg = msg + "WHITE";
+            g2d.setColor(Color.WHITE);
+          }else{
+            msg = msg + "BLACK";
+            g2d.setColor(Color.BLACK);
+          }
+          Font small = new Font("Calibri",Font.BOLD, 25);
+          FontMetrics fm = getFontMetrics(small);
+          g2d.setFont(small);
+          g2d.drawString(msg, 1025,32);
         }
-        Font small = new Font("Calibri",Font.BOLD, 25);
-        FontMetrics fm = getFontMetrics(small);
-        g2d.setFont(small);
-        g2d.drawString(msg, 1025,32);
     }
 
     @Override
@@ -200,8 +205,15 @@ public class Board extends JPanel implements ActionListener {
           if(box%10 == 2 && !pieces.containsKey(box+1) && validDot(box+2, pieces.get(box).getColor()) )
             posiblesMovements.get(box+2).setVisible(true);
           //Comer
-          if(pieces.containsKey(box+11)){posiblesMovements.get(box+11).setVisible(true);}
-          if(pieces.containsKey(box-9)){posiblesMovements.get(box-9).setVisible(true);}
+          if(pieces.containsKey(box+11)){
+            posiblesMovements.get(box+11).setVisible(true);
+            if(posiblesMovements.get(box+11).getType() == KING){
+            }
+          }
+          if(pieces.containsKey(box-9)){
+            posiblesMovements.get(box-9).setVisible(true);
+            if(posiblesMovements.get(box-9).getType() == KING){
+          }
       }
       //Peones negros: Imprime punto si no hay ficha delante o esta es blanca
       else if(color == false && validDot(box-1, pieces.get(box).getColor()) ) {
@@ -209,8 +221,12 @@ public class Board extends JPanel implements ActionListener {
         if(box%10 == 7 && !pieces.containsKey(box-1) && validDot(box-2, pieces.get(box).getColor()) )
           posiblesMovements.get(box-2).setVisible(true);
         //Comer
-        if(pieces.containsKey(box-11)){posiblesMovements.get(box-11).setVisible(true);}
-        if(pieces.containsKey(box+9)){posiblesMovements.get(box+9).setVisible(true);}
+        if(pieces.containsKey(box-11)){
+          posiblesMovements.get(box-11).setVisible(true);
+        }
+        if(pieces.containsKey(box+9)){
+          posiblesMovements.get(box+9).setVisible(true);
+        }
       }
     }
     private void towerPosiblePositions(int box){
@@ -239,7 +255,6 @@ public class Board extends JPanel implements ActionListener {
             posiblesMovements.get(box - i*10).setVisible(true);
             if(pieces.containsKey(box - i*10)){
               pieceInMiddleLEFT = true;
-            }
           }else{
             pieceInMiddleLEFT = true;
           }
@@ -327,12 +342,15 @@ public class Board extends JPanel implements ActionListener {
         }
       }
     }
-    private void horsePosiblePositions(int box, boolean color){
+    private void horsePosiblePositions(int box){
       //Hay que tener en cuenta de no dibujar los puntos fuera de los limites
       //de la mesa, por eso hay tantas condiciones (zonas limite tablero)
         if(box%10 <= 6){   //PUNTOS SUPERIORES
         if(box/10 < 8 && validDot(box+12, pieces.get(box).getColor()) )
           posiblesMovements.get(box+12).setVisible(true);
+          if(posiblesMovements.get(box + 12).getType() == KING){
+            check = true;
+          }
         if(box/10 > 1 && validDot(box-8, pieces.get(box).getColor()) )
           posiblesMovements.get(box-8).setVisible(true);
         if(box/10 <= 6 && validDot(box+21, pieces.get(box).getColor()) )
@@ -351,7 +369,7 @@ public class Board extends JPanel implements ActionListener {
           posiblesMovements.get(box-21).setVisible(true);
       }
     }
-    private void kingPosiblePositions(int box, boolean color){
+    private void kingPosiblePositions(int box){
 
 
       if( validDot(box+10, pieces.get(box).getColor()) ){
@@ -385,6 +403,10 @@ public class Board extends JPanel implements ActionListener {
           posiblesMovements.get(box - 1).setVisible(true);
         if( validDot(box-11, pieces.get(box).getColor()) )
           posiblesMovements.get(box - 11).setVisible(true);
+      }
+
+      if(check && posiblesMovements.size() == 0){
+        checkMate = true;
       }
     }
 
@@ -424,7 +446,7 @@ public class Board extends JPanel implements ActionListener {
             //pieceInMiddle = true;
             break;
           case HORSE:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
-              horsePosiblePositions(box, piece2Move.getColor());
+              horsePosiblePositions(box);
               break;
             }
             break;
@@ -435,7 +457,7 @@ public class Board extends JPanel implements ActionListener {
             //pieceInMiddle = true;
             break;
           case KING:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
-              kingPosiblePositions(box, piece2Move.getColor());
+              kingPosiblePositions(box);
               break;
             }
             break;
@@ -528,18 +550,19 @@ public class Board extends JPanel implements ActionListener {
                       pieces.put(boxPressed, piece2);         // Añadimos la nueva pieza
                       pieces.get(boxPressed).mousePressed(e); // Nueva posición de la pieza
                       pieces.get(boxPressed).setMove(true);   // Finalización del movimiento
+                      isCheck();
                       if( (piecePressed == 51 && (boxPressed == 31 || boxPressed == 71)) || (piecePressed == 58 && (boxPressed == 38 || boxPressed == 78)) ){   // white castling
                         if(largecastling){
                           Piece towr = pieces.get(piecePressed - 40);
                           pieces.remove(piecePressed - 40);
                           pieces.put(piecePressed - 10, towr);
-                          pieces.get(piecePressed -10).castling(piecePressed -10);
+                          pieces.get(piecePressed -10).moveToBox(piecePressed -10);
                           pieces.get(piecePressed -10).setMove(true);
                         }else if(shortcastling){
                           Piece towr = pieces.get(piecePressed +30);
                           pieces.remove(piecePressed +30);
                           pieces.put(piecePressed +10, towr);
-                          pieces.get(piecePressed +10).castling(piecePressed +10);
+                          pieces.get(piecePressed +10).moveToBox(piecePressed +10);
                           pieces.get(piecePressed +10).setMove(true);
                         }
                       }
@@ -565,6 +588,7 @@ public class Board extends JPanel implements ActionListener {
                         pieces.get(boxPressed).mousePressed(e);
                         pieces.get(boxPressed).setMove(true);
                         isWhiteTurn = !isWhiteTurn;
+                        isCheck();
                         strokepattern.setVisible(false);
                         isBoxPressed = false;
                         deletePosibleMovement();
@@ -583,6 +607,14 @@ public class Board extends JPanel implements ActionListener {
               return true;
           }
           return false;
+        }
+        public void isCheck(HashMap<Integer, Dot> posib, HashMap<Integer, Piece> pieces){
+          for (Dot dot: posib.values()){
+            if(pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
+              check = true;
+            }
+
+          }
         }
     }
 }

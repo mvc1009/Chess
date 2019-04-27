@@ -98,7 +98,7 @@ public class Piece {
       dx= STEP*((box/10)-1) + INITIAL_X;
       dy = INITIAL_Y - STEP*((box-1)%10);
     }
-    public void castling(int box){
+    public void moveToBox(int box){
       dx= STEP*((box/10)-1) + INITIAL_X;
       dy = INITIAL_Y - STEP*((box-1)%10);
     }
