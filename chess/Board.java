@@ -50,6 +50,9 @@ public class Board extends JPanel implements ActionListener {
     private int piecePressed = 99;
     private boolean isBoxPressed = false;
 
+    private boolean largecastling = false;
+    private boolean shortcastling = false;
+
 
     public Board() {
 
@@ -210,72 +213,124 @@ public class Board extends JPanel implements ActionListener {
         if(pieces.containsKey(box+9)){posiblesMovements.get(box+9).setVisible(true);}
       }
     }
-
-    private void towerPosiblePositions(int box, boolean color){
-      boolean stop = false;
-      int initialposy = box/10;
-      int initialposx = box%10;
-      //VERTICAL
-      for (int k = 1; k<=8; k++){
-        // Imprime punto si no hay ficha delante o esta es del otro color
-        if(initialposy*10+k != box ){ // No nos fijamos en la propia ficha
-          // Si hay una ficha en el camino para, si es del color contrario
-          // paramos despues de imprimir el punto
-          if(pieces.containsKey(initialposy*10+k)){
-            if(pieces.get(initialposy*10+k).getColor() == !color){
-              posiblesMovements.get(initialposy*10+k).setVisible(true);
-              break;
-            }
-            else{break;}
-          }
-          // En el caso de que no haya ficha por el camino ponemos el punt
-          posiblesMovements.get(initialposy*10+k).setVisible(true);
-        }
-      }
-      //Horizontal
-      for (int k = 1; k<=8; k++){
-        // Imprime punto si no hay ficha delante o esta es del otro color
-        if(initialposy*10+k != box ){ // No nos fijamos en la propia ficha
-          // Si hay una ficha en el camino para, si es del color contrario
-          // paramos despues de imprimir el punto
-          if(pieces.containsKey(initialposy*10+initialposx+k*10)){
-            if(pieces.get(initialposy*10+initialposx+k*10).getColor() == !color){
-              posiblesMovements.get(initialposy*10+initialposx+k*10).setVisible(true);
-              break;
-            }
-            else{break;}
-          }
-          // En el caso de que no haya ficha por el camino ponemos el punt
-          posiblesMovements.get(initialposy*10+initialposx+k*10).setVisible(true);
-        }
-      }
-    }
-
-    private void bishopPosiblePositions(int box, boolean color){
+    private void towerPosiblePositions(int box){
       int x = box/10;
       int y = box%10;
+      boolean pieceInMiddleUP = false;
+      boolean pieceInMiddleDOWN = false;
+      boolean pieceInMiddleLEFT = false;
+      boolean pieceInMiddleRIGHT = false;
 
-      for(int i = 0; i < 8; i++){
-        // UP & RIGHT
-        if(x+i < 8 && y+i < 8)
-          posiblesMovements.get(box + (i+1)*10 + (i+1)).setVisible(true);
-        // UP & LEFT
-        if(x-i > 1 && y+i < 8)
-          posiblesMovements.get(box - (i+1)*10 + (i+1)).setVisible(true);
-        //  DOWN & RIGHT
-        if(x+i < 8 && y-i > 1)
-          posiblesMovements.get(box + (i+1)*10 - (i+1)).setVisible(true);
-        // DOWN & LEFT
-        if(x-i > 1 && y-i > 1)
-          posiblesMovements.get(box - (i+1)*10 - (i+1)).setVisible(true);
+      for(int i = 1; i < 9 ; i++){
+        //UP
+        if(y+i < 9 && !pieceInMiddleUP){
+          if(validDot(box + i, pieces.get(box).getColor())){
+            posiblesMovements.get(box + i).setVisible(true);
+            if(pieces.containsKey(box + i)){
+              pieceInMiddleUP = true;
+            }
+          }else{
+            pieceInMiddleUP = true;
+          }
+        }
+        //LEFT
+        if(x-i > 0 && !pieceInMiddleLEFT){
+          if(validDot(box - i*10, pieces.get(box).getColor())){
+            posiblesMovements.get(box - i*10).setVisible(true);
+            if(pieces.containsKey(box - i*10)){
+              pieceInMiddleLEFT = true;
+            }
+          }else{
+            pieceInMiddleLEFT = true;
+          }
+        }
+        //RIGHT
+        if(x+i < 9  && !pieceInMiddleRIGHT){
+          if(validDot(box + i*10, pieces.get(box).getColor())){
+            posiblesMovements.get(box + i*10).setVisible(true);
+            if(pieces.containsKey(box + i*10)){
+              pieceInMiddleRIGHT = true;
+            }
+          }else{
+            pieceInMiddleRIGHT = true;
+          }
+
+        }
+        //DOWN
+        if(y-i > 0 && !pieceInMiddleDOWN ){
+          if(validDot(box - i, pieces.get(box).getColor())){
+            posiblesMovements.get(box - i).setVisible(true);
+            if(pieces.containsKey(box - i)){
+              pieceInMiddleDOWN = true;
+            }
+          }else{
+            pieceInMiddleDOWN = true;
+          }
+        }
       }
     }
+    private void bishopPosiblePositions(int box){
 
+      //sin fichas entre medio
+      int x = box/10;
+      int y = box%10;
+      boolean pieceInMiddleUPRIGHT = false;
+      boolean pieceInMiddleDOWNRIGHT = false;
+      boolean pieceInMiddleUPLEFT = false;
+      boolean pieceInMiddleDOWNLEFT = false;
+
+      for(int i = 1; i < 9 ; i++){
+        //UP & RIGHT
+        if(x+i < 9 && y+i < 9 && !pieceInMiddleUPRIGHT){
+          if(validDot(box + i*10 + i, pieces.get(box).getColor())){
+            posiblesMovements.get(box + i*10 + i).setVisible(true);
+            if(pieces.containsKey(box + i*10 + i)){
+              pieceInMiddleUPRIGHT = true;
+            }
+          }else{
+            pieceInMiddleUPRIGHT = true;
+          }
+        }
+        //UP & LEFT
+        if(x-i > 0 && y+i < 9 && !pieceInMiddleUPLEFT){
+          if(validDot(box - i*10 + i, pieces.get(box).getColor())){
+            posiblesMovements.get(box - i*10 + i).setVisible(true);
+            if(pieces.containsKey(box - i*10 + i)){
+              pieceInMiddleUPLEFT = true;
+            }
+          }else{
+            pieceInMiddleUPLEFT = true;
+          }
+        }
+        //DOWN & RIGHT
+        if(x+i < 9 && y-i > 0 && !pieceInMiddleDOWNRIGHT){
+          if(validDot(box + i*10 - i, pieces.get(box).getColor())){
+            posiblesMovements.get(box + i*10 - i).setVisible(true);
+            if(pieces.containsKey(box + i*10 - i)){
+              pieceInMiddleDOWNRIGHT = true;
+            }
+          }else{
+            pieceInMiddleDOWNRIGHT = true;
+          }
+
+        }
+        //DOWN & LEFT
+        if(x-i > 0 && y-i > 0 && !pieceInMiddleDOWNLEFT ){
+          if(validDot(box - i*10 - i, pieces.get(box).getColor())){
+            posiblesMovements.get(box - i*10 - i).setVisible(true);
+            if(pieces.containsKey(box - i*10 - i)){
+              pieceInMiddleDOWNLEFT = true;
+            }
+          }else{
+            pieceInMiddleDOWNLEFT = true;
+          }
+        }
+      }
+    }
     private void horsePosiblePositions(int box, boolean color){
-    //Hay que tener en cuenta de no dibujar los puntos fuera de los limites
-    //de la mesa, por eso hay tantas condiciones (zonas limite tablero)
-
-      if(box%10 <= 6){   //PUNTOS SUPERIORES
+      //Hay que tener en cuenta de no dibujar los puntos fuera de los limites
+      //de la mesa, por eso hay tantas condiciones (zonas limite tablero)
+        if(box%10 <= 6){   //PUNTOS SUPERIORES
         if(box/10 < 8 && validDot(box+12, pieces.get(box).getColor()) )
           posiblesMovements.get(box+12).setVisible(true);
         if(box/10 > 1 && validDot(box-8, pieces.get(box).getColor()) )
@@ -285,7 +340,6 @@ public class Board extends JPanel implements ActionListener {
         if(box/10 >= 3 && validDot(box-19, pieces.get(box).getColor()) )
           posiblesMovements.get(box-19).setVisible(true);
       }
-
       if(box%10 >= 3){    // PUNTOS INFERIORES
         if(box/10 < 8 && validDot(box+8, pieces.get(box).getColor()) )
           posiblesMovements.get(box+8).setVisible(true);
@@ -297,12 +351,25 @@ public class Board extends JPanel implements ActionListener {
           posiblesMovements.get(box-21).setVisible(true);
       }
     }
-
     private void kingPosiblePositions(int box, boolean color){
-      if( validDot(box+10, pieces.get(box).getColor()) )
+
+
+      if( validDot(box+10, pieces.get(box).getColor()) ){
         posiblesMovements.get(box + 10).setVisible(true);
-      if( validDot(box+10, pieces.get(box).getColor()) )
+        shortcastling = false;
+        if(!pieces.get(box).isMoved() && pieces.containsKey(box + 30) && pieces.get(box+30).getType() == TOWER && !pieces.get(box+30).isMoved()){
+          posiblesMovements.get(box + 20).setVisible(true);
+          shortcastling = true;
+        }
+      }
+      if( validDot(box-10, pieces.get(box).getColor()) ){
         posiblesMovements.get(box - 10).setVisible(true);
+        largecastling = false;
+        if(!pieces.get(box).isMoved() && pieces.containsKey(box - 40) && pieces.get(box-40).getType() == TOWER && !pieces.get(box-40).isMoved()){
+          posiblesMovements.get(box - 20).setVisible(true);
+          largecastling = true;
+        }
+      }
       if(box%10 < 8){  //Puntos superiores
         if( validDot(box+1, pieces.get(box).getColor()) )
           posiblesMovements.get(box + 1).setVisible(true);
@@ -319,10 +386,6 @@ public class Board extends JPanel implements ActionListener {
         if( validDot(box-11, pieces.get(box).getColor()) )
           posiblesMovements.get(box - 11).setVisible(true);
       }
-    }
-
-    private void queenPosiblePositions(int box, boolean color){
-
     }
 
 //++++++++++++++++++ VISUALICACIÓN RECUADRO +++++++++++++++++
@@ -355,7 +418,7 @@ public class Board extends JPanel implements ActionListener {
       while(i < 8){
         switch(piece2Move.getType()){
           case TOWER: if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
-              towerPosiblePositions(box, piece2Move.getColor());
+              towerPosiblePositions(box);
               break;
             }
             //pieceInMiddle = true;
@@ -366,7 +429,7 @@ public class Board extends JPanel implements ActionListener {
             }
             break;
           case BISHOP:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) && !pieceInMiddle){
-              bishopPosiblePositions(box, piece2Move.getColor());
+              bishopPosiblePositions(box);
               break;
             }
             //pieceInMiddle = true;
@@ -377,8 +440,8 @@ public class Board extends JPanel implements ActionListener {
             }
             break;
           case QUEEN:if(!pieces.containsKey(((box+(box%10)+i)%8)+1) && !pieceInMiddle){
-              towerPosiblePositions(box, piece2Move.getColor());
-              bishopPosiblePositions(box, piece2Move.getColor());
+              towerPosiblePositions(box);
+              bishopPosiblePositions(box);
               break;
             }
             break;
@@ -447,7 +510,6 @@ public class Board extends JPanel implements ActionListener {
             if(firstPressed != 99 && pieces.containsKey(firstPressed)){
               isValid = validMove(boxPressed, firstPressed, posiblesMovements);
             }
-
 // Escojemos la Ficha a mover:
             if(!isBoxPressed && pieces.containsKey(boxPressed) && pieces.get(boxPressed).isWhite() == isWhiteTurn){
                 isBoxPressed = true;
@@ -466,6 +528,21 @@ public class Board extends JPanel implements ActionListener {
                       pieces.put(boxPressed, piece2);         // Añadimos la nueva pieza
                       pieces.get(boxPressed).mousePressed(e); // Nueva posición de la pieza
                       pieces.get(boxPressed).setMove(true);   // Finalización del movimiento
+                      if( (piecePressed == 51 && (boxPressed == 31 || boxPressed == 71)) || (piecePressed == 58 && (boxPressed == 38 || boxPressed == 78)) ){   // white castling
+                        if(largecastling){
+                          Piece towr = pieces.get(piecePressed - 40);
+                          pieces.remove(piecePressed - 40);
+                          pieces.put(piecePressed - 10, towr);
+                          pieces.get(piecePressed -10).castling(piecePressed -10);
+                          pieces.get(piecePressed -10).setMove(true);
+                        }else if(shortcastling){
+                          Piece towr = pieces.get(piecePressed +30);
+                          pieces.remove(piecePressed +30);
+                          pieces.put(piecePressed +10, towr);
+                          pieces.get(piecePressed +10).castling(piecePressed +10);
+                          pieces.get(piecePressed +10).setMove(true);
+                        }
+                      }
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
                       isBoxPressed = false;

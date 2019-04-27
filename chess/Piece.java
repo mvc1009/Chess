@@ -33,6 +33,7 @@ public class Piece {
     protected Image image;
     protected int type;
     protected boolean toMove;
+    private boolean moved;
     //protected int futureMove;
 
     public Piece(boolean color, int type) {
@@ -42,6 +43,7 @@ public class Piece {
         this.color = color;
         this.type = type;
         this.toMove = false;
+        this.moved = false;
         //this.futureMove = 99;
 
     }
@@ -88,6 +90,7 @@ public class Piece {
     public void move(){
       this.x = dx;
       this.y = dy;
+      moved = true;
       setMove(false);
     }
     public void mousePressed(MouseEvent e){
@@ -95,6 +98,11 @@ public class Piece {
       dx= STEP*((box/10)-1) + INITIAL_X;
       dy = INITIAL_Y - STEP*((box-1)%10);
     }
+    public void castling(int box){
+      dx= STEP*((box/10)-1) + INITIAL_X;
+      dy = INITIAL_Y - STEP*((box-1)%10);
+    }
+
     public int beginningBox(int xi, int yi){
       int i = 0;
       int x = 9;
@@ -112,16 +120,9 @@ public class Piece {
           }
           i++;
       }
-      //System.out.println(x*10+y);
       return x*10 +y;
     }
-
-
-    /*public int getFutureMove(){
-      return futureMove;
+    public boolean isMoved(){
+      return moved;
     }
-    public void setFutureMove(int futureMove){
-      this.futureMove = futureMove;
-    }
-*/
 }
