@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import java.awt.EventQueue;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.AbstractButton;

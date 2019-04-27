@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -536,32 +537,37 @@ public class Board extends JPanel implements ActionListener {
 
     private void showOptions(boolean colorPiece){
       JFrame choices = new JFrame();
-      choices.setLayout(null);
 
       JButton queenButton = new JButton(new ImageIcon("multimedia/pieces/white_queen.png"));
       queenButton.setOpaque(false);
       queenButton.setContentAreaFilled(false);
       queenButton.setBorderPainted(false);
       queenButton.setBorder(null);
-      queenButton.setBounds(100, 100 , 400, 100);
+      queenButton.setBounds(100, 100 , 60, 60);
       queenButton.setActionCommand("QUEEN");
       queenButton.addActionListener(this);
+
+      JPanel panel = new JPanel();
+      panel.setLayout(null);
+      panel.setSize(new Dimension(450,450));
+      panel.setLocation(500,300);
+      panel.setVisible(true);
 
       JLabel texto = new JLabel ("Choose which piece to change for the pawn");
       texto.setBounds(50, 50, 400, 40);
 
       //Adding Buttons to QuitButtons JPanel
       //choices.setLayout(null);
-      choices.add(queenButton);
-      choices.add(texto);
+      panel.add(texto);
+      panel.add(queenButton);
       //this.add(quitButton);
 
-      //choices.add(this);
+      choices.add(panel);
       choices.setSize(OUTOFBOUND_X,OUTOFBOUND_Y);
-      choices.setVisible(true);
       //choices.setResizable(false);
       choices.setTitle("Turn pawn into");
       choices.setLocationRelativeTo(null);
+      choices.setVisible(true);
 
 
 
