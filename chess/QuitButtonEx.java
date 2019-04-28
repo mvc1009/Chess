@@ -1,27 +1,9 @@
 package chess;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Toolkit;
-import java.awt.BorderLayout;
-import javax.swing.JButton;
-import java.awt.Dimension;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import java.awt.FlowLayout;
-import java.awt.EventQueue;
-import java.awt.Container;
+import java.awt.*;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.AbstractButton;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import java.awt.Rectangle;
 
 public class QuitButtonEx extends JPanel implements ActionListener{
     private Background panel;
