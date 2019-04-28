@@ -414,18 +414,16 @@ public class Board extends JPanel implements ActionListener {
       }
     }
     public boolean goodMovement(HashMap<Integer, Piece> pieces, Piece piece, int box){
-      posibleMovement(piece, box);
       HashMap<Integer, Dot> posbm = posiblesMovements;
-      for(Dot dot : posbm.values()){
-        for(Piece pie : pieces.values()){
-          if(pie.getColor() != piece.getColor()){
-            posibleMovement(pie, pie.beginningBox(pie.getX(),pie.getY()));
-            if(dot.isVisible() && posiblesMovements.containsKey(dot.getBox())){
-              posiblesMovements = posbm;
-              return false;
-            }
+      for(Piece pie : pieces.values()){
+        if(pie.getColor() != piece.getColor()){
+          posibleMovement(pie, pie.beginningBox(pie.getX(),pie.getY()));
+          if(posiblesMovements.get(box).isVisible()){
+            posiblesMovements = posbm;
+            return false;
           }
         }
+
       }
       posiblesMovements = posbm;
       return true;
