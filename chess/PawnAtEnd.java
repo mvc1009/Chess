@@ -35,7 +35,7 @@ public class PawnAtEnd implements ActionListener {
   protected Lock lock;
   protected Condition choiceMade;
 
-  Piece pawn;
+  boolean colour;
   Board.HitTestAdapter mouse;
   int box;
   int typechanged = 0;
@@ -44,14 +44,20 @@ public class PawnAtEnd implements ActionListener {
 
   public PawnAtEnd(int box, boolean colour, Board.HitTestAdapter mouse) {
       this.mouse = mouse;
-      pawn = new Pawn(colour, box%10);
+      this.colour=colour;
       this.box = box;
       showOptions();
   }
 
 
   private void showOptions(){
-    JButton queenButton = new JButton(new ImageIcon("multimedia/pieces/center/white_queen_center.png"));
+    String img = "multimedia/pieces/center/";
+    if(colour)
+      img = img + "white";
+    else
+      img = img + "black";
+
+    JButton queenButton = new JButton(new ImageIcon(img + "_queen_center.png"));
     queenButton.setOpaque(true);
     queenButton.setContentAreaFilled(true);
     queenButton.setBorderPainted(false);
@@ -59,6 +65,33 @@ public class PawnAtEnd implements ActionListener {
     queenButton.setBounds(0, 0 , 60, 60);
     queenButton.setActionCommand("QUEEN");
     queenButton.addActionListener(this);
+
+    JButton horseButton = new JButton(new ImageIcon(img + "_horse_center.png"));
+    horseButton.setOpaque(true);
+    horseButton.setContentAreaFilled(true);
+    horseButton.setBorderPainted(false);
+    horseButton.setBorder(null);
+    horseButton.setBounds(0, 0 , 60, 60);
+    horseButton.setActionCommand("HORSE");
+    horseButton.addActionListener(this);
+
+    JButton bishopButton = new JButton(new ImageIcon(img+"_bishop_center.png"));
+    bishopButton.setOpaque(true);
+    bishopButton.setContentAreaFilled(true);
+    bishopButton.setBorderPainted(false);
+    bishopButton.setBorder(null);
+    bishopButton.setBounds(0, 0 , 60, 60);
+    bishopButton.setActionCommand("BISHOP");
+    bishopButton.addActionListener(this);
+
+    JButton towerButton = new JButton(new ImageIcon(img+"_tower_center.png"));
+    towerButton.setOpaque(true);
+    towerButton.setContentAreaFilled(true);
+    towerButton.setBorderPainted(false);
+    towerButton.setBorder(null);
+    towerButton.setBounds(0, 0 , 60, 60);
+    towerButton.setActionCommand("TOWER");
+    towerButton.addActionListener(this);
 
     JPanel panel = new JPanel();
     panel.setLayout(null);
@@ -73,6 +106,9 @@ public class PawnAtEnd implements ActionListener {
     //choices.setLayout(null);
     panel.add(texto);
     panel.add(queenButton);
+    panel.add(horseButton);
+    panel.add(bishopButton);
+    panel.add(towerButton);
     //this.add(quitButton);
 
     choices.add(panel);
@@ -84,12 +120,21 @@ public class PawnAtEnd implements ActionListener {
   }
   @Override
   public void actionPerformed(ActionEvent e){
-
-    if ("QUEEN".equals(e.getActionCommand())){
-      System.out.println(typechanged);
-      typechanged = QUEEN;
-      changePiece();
+    switch(e.getActionCommand()){
+      case "QUEEN":
+            typechanged = QUEEN;
+            break;
+      case "HORSE":
+            typechanged = HORSE;
+            break;
+      case "BISHOP":
+            typechanged = BISHOP;
+            break;
+      case "TOWER":
+            typechanged = TOWER;
+            break;
     }
+    changePiece();
   }
 
   public void changePiece(){

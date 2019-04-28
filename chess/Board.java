@@ -676,9 +676,16 @@ public class Board extends JPanel implements ActionListener {
           typetochange = pawn.newType();
 
           switch(typetochange){
-            case TOWER:break;
-            case HORSE:break;
-            case BISHOP:break;
+            case TOWER:pieces.put(boxend, new Tower(colourPiece, true));
+                  pieces.get(boxend).setMove(true);
+                  pieces.get(boxend).moveToBox(boxend);
+                  break;
+            case HORSE:pieces.put(boxend, new Horse(colourPiece, true));
+                  pieces.get(boxend).setMove(true);
+                  pieces.get(boxend).moveToBox(boxend);
+            case BISHOP:pieces.put(boxend, new Bishop(colourPiece, true));
+                  pieces.get(boxend).setMove(true);
+                  pieces.get(boxend).moveToBox(boxend);
             case QUEEN:pieces.put(boxend, new Queen(colourPiece));
                   pieces.get(boxend).setMove(true);
                   pieces.get(boxend).moveToBox(boxend);
