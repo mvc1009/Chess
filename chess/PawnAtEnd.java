@@ -35,13 +35,14 @@ public class PawnAtEnd implements ActionListener {
   protected Lock lock;
   protected Condition choiceMade;
 
-  HitTestAdapter mouse;
   Piece pawn;
+  Board.HitTestAdapter mouse;
   int box;
-  int typechanged;
+  int typechanged = 0;
+  boolean buttonPressed;
   JFrame choices = new JFrame();
 
-  public PawnAtEnd(int box, boolean colour, HitTestAdapter mouse) {
+  public PawnAtEnd(int box, boolean colour, Board.HitTestAdapter mouse) {
       this.mouse = mouse;
       pawn = new Pawn(colour, box%10);
       this.box = box;
@@ -84,15 +85,20 @@ public class PawnAtEnd implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e){
 
-    System.out.println("Aqui entras?");
-
     if ("QUEEN".equals(e.getActionCommand())){
+      System.out.println(typechanged);
       typechanged = QUEEN;
       changePiece();
     }
   }
 
   public void changePiece(){
-    mouse.turnInToPiece(this.box, typechanged);
+    mouse.turnInToPiece(this.box);
+  }
+  public boolean choiceMade(){
+    return buttonPressed;
+  }
+  public int newType(){
+    return typechanged;
   }
 }

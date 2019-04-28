@@ -52,6 +52,7 @@ public class Board extends JPanel implements ActionListener {
 
     HashMap<Integer, Piece> pieces;
     HashMap<Integer, Dot> posiblesMovements;
+    HitTestAdapter mouse;
     private int boxPressed = 99;
     private int piecePressed = 99;
     private boolean isBoxPressed = false;
@@ -72,7 +73,8 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void initBoard() {
-        addMouseListener(new HitTestAdapter());
+        mouse = new HitTestAdapter();
+        addMouseListener(mouse);
         setFocusable(true);
 
         background = new Background();
@@ -532,6 +534,11 @@ public class Board extends JPanel implements ActionListener {
       return true;
     }
 
+//    public void makeTheChange(int newbox){
+//      //This method let PawnAtEnd call the function turnInToPiece:
+//      mouse.turnInToPiece(newbox);
+//    }
+
 
 //************************ LECTOR MOUSE ***************************************
 
@@ -539,6 +546,7 @@ public class Board extends JPanel implements ActionListener {
       int firstPressed = 99;
       int typetochange = 0;
       boolean colourPiece;
+      PawnAtEnd pawn;
 
       @Override
         public void mousePressed(MouseEvent e) {
@@ -656,12 +664,16 @@ public class Board extends JPanel implements ActionListener {
           //Dar a elejir al jugador en que pieza quiere convertir su peon.
           boolean colourPiece = pieces.get(boxend).getColor();
 
-          PawnAtEnd pawn = new PawnAtEnd(boxend, colourPiece, this);
+          pawn = new PawnAtEnd(boxend, colourPiece, this);
         }
 
-        public void turnInToPiece(int boxend, int type){ // Se llama desde PawnAtEnd
+        public void turnInToPiece(int boxend){ // Se llama desde PawnAtEnd
+          //boolean keepGoing = pawn.choiceMade();
+          //while(keepGoing){};
+
+          System.out.println(typetochange);
           pieces.remove(boxend);
-          typetochange = type;
+          typetochange = pawn.newType();
 
           switch(typetochange){
             case TOWER:break;
