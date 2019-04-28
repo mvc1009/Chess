@@ -40,36 +40,36 @@ public class PawnAtEnd implements ActionListener {
     System.out.println(img);
 
     JButton queenButton = new JButton(new ImageIcon(img + "_queen_center.png"));
-    queenButton.setOpaque(true);
-    queenButton.setContentAreaFilled(true);
-    queenButton.setBorderPainted(true);
+    queenButton.setOpaque(false);
+    queenButton.setContentAreaFilled(false);
+    queenButton.setBorderPainted(false);
     queenButton.setBorder(null);
     queenButton.setBounds(0, 40 , 80, 80);
     queenButton.setActionCommand("QUEEN");
     queenButton.addActionListener(this);
 
     JButton horseButton = new JButton(new ImageIcon(img + "_horse_center.png"));
-    horseButton.setOpaque(true);
-    horseButton.setContentAreaFilled(true);
-    horseButton.setBorderPainted(true);
+    horseButton.setOpaque(false);
+    horseButton.setContentAreaFilled(false);
+    horseButton.setBorderPainted(false);
     horseButton.setBorder(null);
     horseButton.setBounds(80, 40 , 80, 80);
     horseButton.setActionCommand("HORSE");
     horseButton.addActionListener(this);
 
     JButton bishopButton = new JButton(new ImageIcon(img + "_bishop_center.png"));
-    bishopButton.setOpaque(true);
-    bishopButton.setContentAreaFilled(true);
-    bishopButton.setBorderPainted(true);
+    bishopButton.setOpaque(false);
+    bishopButton.setContentAreaFilled(false);
+    bishopButton.setBorderPainted(false);
     bishopButton.setBorder(null);
     bishopButton.setBounds(0, 120 , 80, 80);
     bishopButton.setActionCommand("BISHOP");
     bishopButton.addActionListener(this);
 
     JButton towerButton = new JButton(new ImageIcon(img + "_tower_center.png"));
-    towerButton.setOpaque(true);
-    towerButton.setContentAreaFilled(true);
-    towerButton.setBorderPainted(true);
+    towerButton.setOpaque(false);
+    towerButton.setContentAreaFilled(false);
+    towerButton.setBorderPainted(false);
     towerButton.setBorder(null);
     towerButton.setBounds(80, 120, 80, 80);
     towerButton.setActionCommand("TOWER");

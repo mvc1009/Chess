@@ -20,8 +20,8 @@ public class Board extends JPanel implements ActionListener {
     * About colors: White -> TRUE, Black -> FALSE
     * About pieces: TOWER -> 1, HORSE -> 2, BISHOP -> 3, QUEEN -> 4, KING -> 5, PAWN -> 6.
     * About board: We established boxes (HitBox), each box corresponds a position on the chessboard.
-    *       In chess the movements are described with the piece, and the position of thes chessboard (Ex. E1 (KING))
-    *       so we imitated them into the boxes: The letters are displayed by the nubmer of the alphabet. (Ex. 51 (KING))
+    *       In chess the movements are described with the piece, and the position of these chessboard (Ex. E1 (KING))
+    *       so we imitated them into the boxes: The letters are displayed by the number of the alphabet. (Ex. 51 (KING))
     *
     * We simbolize with a yellow DOT the possible positions of the selected piece. (Dot)
     * To remark the piece that is selected from the user, we print a yellow Square arround the box. (Stroke Pattern)
