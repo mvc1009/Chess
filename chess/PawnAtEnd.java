@@ -9,11 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Image;
 import javax.swing.ImageIcon;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.lang.Thread;
-import java.lang.Exception;
 
 import java.io.*;
 import chess.piece.*;
@@ -23,17 +18,6 @@ public class PawnAtEnd implements ActionListener {
   public static final int HORSE = 2;
   public static final int BISHOP = 3;
   public static final int QUEEN = 4;
-  public static final int KING = 5;
-  public static final int PAWN = 6;
-
-  public static final int INITIAL_X = 220;
-  public static final int INITIAL_Y = 490;
-  public static final int STEP = 60;
-  public static final int OUTOFBOUND_X = 700;
-  public static final int OUTOFBOUND_Y = 550;
-
-  protected Lock lock;
-  protected Condition choiceMade;
 
   boolean colour;
   Board.HitTestAdapter mouse;
@@ -52,55 +36,58 @@ public class PawnAtEnd implements ActionListener {
 
   private void showOptions(){
     String img = "multimedia/pieces/center/";
-    if(colour)
+    if(colour){
       img = img + "white";
-    else
+    }
+    else{
       img = img + "black";
+    }
+    System.out.println(img);
 
     JButton queenButton = new JButton(new ImageIcon(img + "_queen_center.png"));
     queenButton.setOpaque(true);
     queenButton.setContentAreaFilled(true);
-    queenButton.setBorderPainted(false);
+    queenButton.setBorderPainted(true);
     queenButton.setBorder(null);
-    queenButton.setBounds(0, 0 , 60, 60);
+    queenButton.setBounds(0, 40 , 80, 80);
     queenButton.setActionCommand("QUEEN");
     queenButton.addActionListener(this);
 
     JButton horseButton = new JButton(new ImageIcon(img + "_horse_center.png"));
     horseButton.setOpaque(true);
     horseButton.setContentAreaFilled(true);
-    horseButton.setBorderPainted(false);
+    horseButton.setBorderPainted(true);
     horseButton.setBorder(null);
-    horseButton.setBounds(0, 0 , 60, 60);
+    horseButton.setBounds(80, 40 , 80, 80);
     horseButton.setActionCommand("HORSE");
     horseButton.addActionListener(this);
 
-    JButton bishopButton = new JButton(new ImageIcon(img+"_bishop_center.png"));
+    JButton bishopButton = new JButton(new ImageIcon(img + "_bishop_center.png"));
     bishopButton.setOpaque(true);
     bishopButton.setContentAreaFilled(true);
-    bishopButton.setBorderPainted(false);
+    bishopButton.setBorderPainted(true);
     bishopButton.setBorder(null);
-    bishopButton.setBounds(0, 0 , 60, 60);
+    bishopButton.setBounds(0, 120 , 80, 80);
     bishopButton.setActionCommand("BISHOP");
     bishopButton.addActionListener(this);
 
-    JButton towerButton = new JButton(new ImageIcon(img+"_tower_center.png"));
+    JButton towerButton = new JButton(new ImageIcon(img + "_tower_center.png"));
     towerButton.setOpaque(true);
     towerButton.setContentAreaFilled(true);
-    towerButton.setBorderPainted(false);
+    towerButton.setBorderPainted(true);
     towerButton.setBorder(null);
-    towerButton.setBounds(0, 0 , 60, 60);
+    towerButton.setBounds(80, 120, 80, 80);
     towerButton.setActionCommand("TOWER");
     towerButton.addActionListener(this);
 
     JPanel panel = new JPanel();
     panel.setLayout(null);
-    panel.setSize(new Dimension(450,450));
+    panel.setSize(new Dimension(120,120));
     panel.setLocation(500,300);
     panel.setVisible(true);
 
-    JLabel texto = new JLabel ("Choose which piece to change for the pawn");
-    texto.setBounds(50, 50, 300, 40);
+    JLabel texto = new JLabel ("Choose a piece:");
+    texto.setBounds(20, 0, 120, 40);
 
     //Adding Buttons to QuitButtons JPanel
     //choices.setLayout(null);
@@ -112,7 +99,7 @@ public class PawnAtEnd implements ActionListener {
     //this.add(quitButton);
 
     choices.add(panel);
-    choices.setSize(OUTOFBOUND_X,OUTOFBOUND_Y);
+    choices.setSize(165,240);
     //choices.setResizable(false);
     choices.setTitle("Turn pawn into");
     choices.setLocationRelativeTo(null);
@@ -144,6 +131,7 @@ public class PawnAtEnd implements ActionListener {
     return buttonPressed;
   }
   public int newType(){
+    choices.setVisible(false);
     return typechanged;
   }
 }

@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 public class QuitButtonEx extends JPanel implements ActionListener{
     private Background panel;
     private ChessLetters title;
+    JFrame menu;
 
     public QuitButtonEx(){
         initMenu();
@@ -72,7 +73,7 @@ public class QuitButtonEx extends JPanel implements ActionListener{
 
       //Fixing menu JFrame
 
-      JFrame menu = new JFrame();
+      menu = new JFrame();
       menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       menu.add(this);
       menu.setSize(1200,700);
@@ -84,11 +85,13 @@ public class QuitButtonEx extends JPanel implements ActionListener{
 
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e){
         if ("PLAY".equals(e.getActionCommand())){
           ChessGame chess = new ChessGame();
           chess.startGame();
+          menu.setVisible(false);
         }
     }
 

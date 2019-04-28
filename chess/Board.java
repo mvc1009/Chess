@@ -230,18 +230,26 @@ public class Board extends JPanel implements ActionListener {
         if(box%10 == 2 && !pieces.containsKey(box+1) && !pieces.containsKey(box+2) )
           posiblesMovements.get(box+2).setVisible(true);
         //Comer diagonal
-        if(pieces.containsKey(box+11)){posiblesMovements.get(box+11).setVisible(true);}
-        if(pieces.containsKey(box-9)){posiblesMovements.get(box-9).setVisible(true);}
+        if(pieces.containsKey(box+11) && pieces.get(box+11).getColor() != color){
+          posiblesMovements.get(box+11).setVisible(true);
+        }
+        if(pieces.containsKey(box-9) && pieces.get(box-9).getColor() != color){
+          posiblesMovements.get(box-9).setVisible(true);
+        }
       }
       //Peones negros: Imprime punto si no hay ficha delante o esta es blanca
-      else if(color == false && !pieces.containsKey(box-1)){
+      else{
         if(!pieces.containsKey(box-1) )
           posiblesMovements.get(box-1).setVisible(true);
         if(box%10 == 7 && !pieces.containsKey(box-1) && !pieces.containsKey(box-2) )
           posiblesMovements.get(box-2).setVisible(true);
         //Comer
-        if(pieces.containsKey(box-11)){posiblesMovements.get(box-11).setVisible(true);}
-        if(pieces.containsKey(box+9)){posiblesMovements.get(box+9).setVisible(true);}
+        if(pieces.containsKey(box-11) && pieces.get(box-11).getColor() != color){
+          posiblesMovements.get(box-11).setVisible(true);
+        }
+        if(pieces.containsKey(box+9) && pieces.get(box+9).getColor() != color){
+          posiblesMovements.get(box+9).setVisible(true);
+        }
       }
     }
 
@@ -361,9 +369,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void horsePosiblePositions(int box){
-    //Hay que tener en cuenta de no dibujar los puntos fuera de los limites
-    //de la mesa, por eso hay tantas condiciones (zonas limite tablero)
-
       if(box%10 <= 6){   //PUNTOS SUPERIORES
         if(box/10 < 8 && validDot(box+12, pieces.get(box).getColor()) )
           posiblesMovements.get(box+12).setVisible(true);
@@ -662,7 +667,7 @@ public class Board extends JPanel implements ActionListener {
 
         public void letPlayerChoose (int boxend){
           //Dar a elejir al jugador en que pieza quiere convertir su peon.
-          boolean colourPiece = pieces.get(boxend).getColor();
+          colourPiece = pieces.get(boxend).getColor();
 
           pawn = new PawnAtEnd(boxend, colourPiece, this);
         }
@@ -671,9 +676,9 @@ public class Board extends JPanel implements ActionListener {
           //boolean keepGoing = pawn.choiceMade();
           //while(keepGoing){};
 
-          System.out.println(typetochange);
           pieces.remove(boxend);
           typetochange = pawn.newType();
+          System.out.println("typetochange = " + typetochange);
 
           switch(typetochange){
             case TOWER:pieces.put(boxend, new Tower(colourPiece, true));
@@ -683,9 +688,11 @@ public class Board extends JPanel implements ActionListener {
             case HORSE:pieces.put(boxend, new Horse(colourPiece, true));
                   pieces.get(boxend).setMove(true);
                   pieces.get(boxend).moveToBox(boxend);
+                  break;
             case BISHOP:pieces.put(boxend, new Bishop(colourPiece, true));
                   pieces.get(boxend).setMove(true);
                   pieces.get(boxend).moveToBox(boxend);
+                  break;
             case QUEEN:pieces.put(boxend, new Queen(colourPiece));
                   pieces.get(boxend).setMove(true);
                   pieces.get(boxend).moveToBox(boxend);
