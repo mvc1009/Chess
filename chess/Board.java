@@ -63,9 +63,6 @@ public class Board extends JPanel implements ActionListener {
     private boolean checkMate = false;
     private boolean pawnInChangingPosition = false;
 
-    private Tower torre;
-
-
     public Board() {
 
         initBoard();
@@ -535,69 +532,13 @@ public class Board extends JPanel implements ActionListener {
       return true;
     }
 
-    private void showOptions(boolean colorPiece){
-      JFrame choices = new JFrame();
-
-      JButton queenButton = new JButton(new ImageIcon("multimedia/pieces/white_queen_center.png"));
-      queenButton.setOpaque(true);
-      queenButton.setContentAreaFilled(true);
-      queenButton.setBorderPainted(false);
-      queenButton.setBorder(null);
-      queenButton.setBounds(0, 0 , 60, 60);
-      queenButton.setActionCommand("QUEEN");
-      queenButton.addActionListener(this);
-
-      JPanel panel = new JPanel();
-      panel.setLayout(null);
-      panel.setSize(new Dimension(450,450));
-      panel.setLocation(500,300);
-      panel.setVisible(true);
-
-      JLabel texto = new JLabel ("Choose which piece to change for the pawn");
-      texto.setBounds(50, 50, 300, 40);
-
-      //Adding Buttons to QuitButtons JPanel
-      //choices.setLayout(null);
-      panel.add(texto);
-      panel.add(queenButton);
-      //this.add(quitButton);
-
-      choices.add(panel);
-      choices.setSize(OUTOFBOUND_X,OUTOFBOUND_Y);
-      //choices.setResizable(false);
-      choices.setTitle("Turn pawn into");
-      choices.setLocationRelativeTo(null);
-      choices.setVisible(true);
-
-
-
-
-/*        pieces.put(91, new Queen(colorPiece));
-      pieces.get(91).setMove(true);
-      pieces.get(91).moveToShow(OUTOFBOUND_X+ STEP, 2*OUTOFBOUND_Y/8 );
-      pieces.get(91).move();
-
-      pieces.put(92, new Bishop(colorPiece, true));
-      pieces.get(92).setMove(true);
-      pieces.get(92).moveToShow(OUTOFBOUND_X+ STEP, 3*OUTOFBOUND_Y/8 );
-      pieces.get(92).move();
-
-      pieces.put(93, new Horse(colorPiece, true));
-      pieces.get(93).setMove(true);
-      pieces.get(93).moveToShow(OUTOFBOUND_X+ STEP, 4*OUTOFBOUND_Y/8 );
-      pieces.get(93).move();
-
-      pieces.put(94, new Tower(colorPiece, true));
-      pieces.get(94).setMove(true);
-      pieces.get(94).moveToShow(OUTOFBOUND_X+ STEP, 5*OUTOFBOUND_Y/8 );
-      pieces.get(94).move();
-*/
-    }
 
 //************************ LECTOR MOUSE ***************************************
 
     class HitTestAdapter extends MouseAdapter {
       int firstPressed = 99;
+      int typetochange = 0;
+      boolean colourPiece;
 
       @Override
         public void mousePressed(MouseEvent e) {
@@ -619,7 +560,6 @@ public class Board extends JPanel implements ActionListener {
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
                 posibleMovement(pieces.get(boxPressed));
-                turnInToPiece(boxPressed);
                 //System.out.println("segundo " + boxPressed);
 
 // Escojemos donde mover dicha Ficha
@@ -664,7 +604,7 @@ public class Board extends JPanel implements ActionListener {
                     }
                     //Peon llega al final:
                     if(pieces.get(boxPressed).getType()==PAWN && (boxPressed%10 == 8 | boxPressed%10 == 1) ){
-                        turnInToPiece(boxPressed);
+                        letPlayerChoose(boxPressed);
                     }
                 }
             }
@@ -712,26 +652,30 @@ public class Board extends JPanel implements ActionListener {
           }
         }
 
-
-        public void turnInToPiece(int boxend){
+        public void letPlayerChoose (int boxend){
           //Dar a elejir al jugador en que pieza quiere convertir su peon.
-          boolean pawnInChangingPosition = true;
-          int type = 0;
+          boolean colourPiece = pieces.get(boxend).getColor();
 
-          showOptions(pieces.get(boxend).getColor());
+          PawnAtEnd pawn = new PawnAtEnd(boxend, colourPiece, this);
+        }
 
+        public void turnInToPiece(int boxend, int type){ // Se llama desde PawnAtEnd
           pieces.remove(boxend);
-          switch(type){
-            case TOWER:
-            case HORSE:
-            case BISHOP:
-            case QUEEN:
+          typetochange = type;
+
+          switch(typetochange){
+            case TOWER:break;
+            case HORSE:break;
+            case BISHOP:break;
+            case QUEEN:pieces.put(boxend, new Queen(colourPiece));
+                  pieces.get(boxend).setMove(true);
+                  pieces.get(boxend).moveToBox(boxend);
+                  break;
           }
           //pieces.put(boxend, new Queen(colorPiece));
           //pieces.get(boxend).setMove(true);
           //pieces.get(boxend).moveToBox(boxend);
         }
-
 
     }
 }
