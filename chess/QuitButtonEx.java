@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 public class QuitButtonEx extends JPanel implements ActionListener{
     private Background panel;
     private ChessLetters title;
+    private ChessGame chess;
+    private String winner = " ";
     JFrame menu;
 
     public QuitButtonEx(){
@@ -27,7 +29,7 @@ public class QuitButtonEx extends JPanel implements ActionListener{
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void menu() {
+    public void menu() {
 
       //BUTTONS
       JButton playButton = new JButton(new ImageIcon("multimedia/play.png"));
@@ -49,7 +51,6 @@ public class QuitButtonEx extends JPanel implements ActionListener{
 
       //Adding Buttons to QuitButtons JPanel
       this.setLayout(null);
-      //this.setSize(180,60);
       this.add(playButton);
       this.add(quitButton);
 
@@ -66,17 +67,14 @@ public class QuitButtonEx extends JPanel implements ActionListener{
       menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
-
-
     @Override
     public void actionPerformed(ActionEvent e){
         if ("PLAY".equals(e.getActionCommand())){
-          ChessGame chess = new ChessGame();
+          chess = new ChessGame(this);
           chess.startGame();
           menu.setVisible(false);
         }
     }
-
     public void doDrawing(Graphics g){
       Graphics2D g2d = (Graphics2D) g;
       g2d.drawImage(panel.getImage(),0,0,this);
@@ -87,13 +85,21 @@ public class QuitButtonEx extends JPanel implements ActionListener{
       FontMetrics fm = getFontMetrics(small);
       g2d.setFont(small);
       g2d.drawString("Choose your Option: ", 200,200);
+
+      if(winner.equals("BLACK") | winner.equals("WHITE")) {
+        g2d.drawString("THE WINNER IS: " + winner, 200,150);
+      }
+    }
+
+    public void setWinner(boolean color){
+      if(color)
+        winner = "WHITE";
+      else
+        winner = "BLACK";
     }
 
     public static void main(String[] args) {
           QuitButtonEx ex = new QuitButtonEx();
           ex.setVisible(true);
-          //Borrar las dos lineas a continuación, descomentar lo anterior.
-          //ChessGame chess = new ChessGame();
-          //chess.startGame();
     }
 }

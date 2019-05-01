@@ -26,6 +26,7 @@ public class Board extends JPanel implements ActionListener {
     * We simbolize with a yellow DOT the possible positions of the selected piece. (Dot)
     * To remark the piece that is selected from the user, we print a yellow Square arround the box. (Stroke Pattern)
     */
+    public QuitButtonEx menu;
 
     public static final int TOWER = 1;
     public static final int HORSE = 2;
@@ -66,7 +67,9 @@ public class Board extends JPanel implements ActionListener {
 
     private int posWhiteKing = 51;
     private int posBlackKing = 58;
-    public Board() {
+
+    public Board(QuitButtonEx menu) {
+        this.menu = menu;
         initBoard();
         initialPiecesPositions();
         initialPosiblePositions();
@@ -659,9 +662,8 @@ public class Board extends JPanel implements ActionListener {
                       }else{
                         Piece piece2 = pieces.get(piecePressed);
                         if(pieces.get(boxPressed).getType() == KING){
-                          pieces.remove(piecePressed);
-                          pieces.remove(boxPressed);
-                          System.out.println("fin");
+                          menu.setWinner(!pieces.get(boxPressed).getColor());
+                          menu.menu();
                         }
                         pieces.remove(piecePressed);
                         pieces.remove(boxPressed);
