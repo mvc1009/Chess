@@ -721,10 +721,13 @@ public class Board extends JPanel implements ActionListener {
 
 
           System.out.println("-----------NOCHECK---------2-------");
+          HashMap<Integer,Dot> poss2 = new HashMap<Integer,Dot>();
+          poss2 = posiblesMovements;    //We save the initial posiblesMovements map
 
           HashMap<Integer,Dot> poss = new HashMap<Integer,Dot>();
           poss = posiblesMovements;    //We save the initial posiblesMovements map
-
+          HashMap<Integer,Piece> pieces2 = new HashMap<Integer,Piece>();
+          pieces2 = pieces;
 
           System.out.println("-----------poss----------------");
           for(Dot d : poss.values()){
@@ -739,6 +742,7 @@ public class Board extends JPanel implements ActionListener {
           pieces.remove(pie.getBox());
           for(Dot dot : poss.values()){
             if(dot.isVisible()){
+              System.out.println("---------------"+dot.getBox()+"+++++++++++++++");
               if(pieces.containsKey(dot.getBox())){
                 p3 = pieces.get(dot.getBox());
                 pieces.remove(dot.getBox());
@@ -747,11 +751,11 @@ public class Board extends JPanel implements ActionListener {
               pieces.put(dot.getBox(), pie);
               //Calculate the oponent possible positions of all his pieces to detect the possible check
               System.out.println("-----------NOCHECK---------3-------");
-              boolean bo  =isCheckALLPieces(pieces.get(dot.getBox()), posKingTurn);
+              boolean bo  = isCheckALLPieces(pieces.get(dot.getBox()), posKingTurn);
               System.out.println("***********"+bo+"*************");
               if(bo){
                 System.out.println("-----------NOCHECK--------4--------");
-                poss.get(dot.getBox()).setVisible(false);
+                poss2.get(dot.getBox()).setVisible(false);
               }
               pieces.remove(dot.getBox());
               if(thereWasAPiece){
@@ -763,7 +767,8 @@ public class Board extends JPanel implements ActionListener {
           }
           System.out.println("-----------NOCHECK--------5--------");
           pieces.put(pie.getBox(),pie);
-          posiblesMovements = poss;
+          posiblesMovements = poss2;
+          pieces = pieces2;
 
 
           System.out.println("-----------posiblesMovements----------------");
