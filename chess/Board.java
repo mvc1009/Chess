@@ -52,6 +52,7 @@ public class Board extends JPanel implements ActionListener {
 
     HashMap<Integer, Piece> pieces;
     HashMap<Integer, Dot> posiblesMovements;
+    HashMap<Integer, Dot> posiblesMovements2;
     HashMap<Integer, Dot> checkTest;
     HitTestAdapter mouse;
     private int boxPressed = 99;
@@ -114,7 +115,7 @@ public class Board extends JPanel implements ActionListener {
           g2d.drawString(msgCheck, 425,32);
         }
         if(!checkMate){
-          for(Dot dot : posiblesMovements.values()){
+          for(Dot dot : posiblesMovements2.values()){
               if(dot.isVisible()){
                 g2d.drawImage(dot.getImage(), dot.getX(), dot.getY(), this);
               }
@@ -200,16 +201,18 @@ public class Board extends JPanel implements ActionListener {
 //We put a DOT that when it is visible, these means that there are a possible movement
     private void initialPosiblePositions(){
       posiblesMovements = new HashMap<Integer, Dot>();
+      posiblesMovements2 = new HashMap<Integer, Dot>();
       checkTest = new HashMap<Integer, Dot>();
 
       for(int i = 10; i <= 88; i++){
         if(i%10 != 9){
           posiblesMovements.put(i, new Dot(i));
+          posiblesMovements2.put(i, new Dot(i));
           checkTest.put(i, new Dot(i));
         }
       }
     }
-    private boolean validDot(int boxd, boolean colord){
+    private boolean validDot(HashMap<Integer, Piece> pieces2, int boxd, boolean colord){
 
       /*
       * Function that determinates if a DOT will be shown upper the piece.
@@ -217,8 +220,8 @@ public class Board extends JPanel implements ActionListener {
       *   SUM:  detect if there are a piece in the middle of the piece trayectory and determinates if it can be eaten or not.
       */
 
-      if(pieces.containsKey(boxd)){
-        if(pieces.get(boxd).getColor() == !colord)
+      if(pieces2.containsKey(boxd)){
+        if(pieces2.get(boxd).getColor() == !colord)
           return true;
         else
           return false;
@@ -228,35 +231,35 @@ public class Board extends JPanel implements ActionListener {
 
 //Diferent possible positions of each type of piece
 
-    private void pawnPosiblePositions(HashMap<Integer, Dot> posiblesMovements, int box, boolean color){
+    private void pawnPosiblePositions(HashMap<Integer, Dot> posiblesMovements, HashMap<Integer, Piece> pieces2,int box, boolean color){
       if( color ) {     //White Pawns
-        if(!pieces.containsKey(box+1))                                                            //Print a DOT if there are any piece in front of them
+        if(!pieces2.containsKey(box+1))                                                            //Print a DOT if there are any piece in front of them
           posiblesMovements.get(box+1).setVisible(true);
-        if(box%10 == 2 && !pieces.containsKey(box+1) && !pieces.containsKey(box+2) )              //If the pawn is in the initial position it can be moved 2 positions.
+        if(box%10 == 2 && !pieces2.containsKey(box+1) && !pieces2.containsKey(box+2) )              //If the pawn is in the initial position it can be moved 2 positions.
           posiblesMovements.get(box+2).setVisible(true);
                                                                                                   //The pawns eat in diagonal.
-        if(pieces.containsKey(box+11) && pieces.get(box+11).getColor() != color){
+        if(pieces2.containsKey(box+11) && pieces2.get(box+11).getColor() != color){
           posiblesMovements.get(box+11).setVisible(true);
         }
-        if(pieces.containsKey(box-9) && pieces.get(box-9).getColor() != color){
+        if(pieces2.containsKey(box-9) && pieces2.get(box-9).getColor() != color){
           posiblesMovements.get(box-9).setVisible(true);
         }
       }
       else{           //Black Pawns
-        if(!pieces.containsKey(box-1) )                                                           //Print a DOT if there are any piece in front of them
+        if(!pieces2.containsKey(box-1) )                                                           //Print a DOT if there are any piece in front of them
           posiblesMovements.get(box-1).setVisible(true);
-        if(box%10 == 7 && !pieces.containsKey(box-1) && !pieces.containsKey(box-2) )              //If the pawn is in the initial position it can be moved 2 positions.
+        if(box%10 == 7 && !pieces2.containsKey(box-1) && !pieces2.containsKey(box-2) )              //If the pawn is in the initial position it can be moved 2 positions.
           posiblesMovements.get(box-2).setVisible(true);
 
-        if(pieces.containsKey(box-11) && pieces.get(box-11).getColor() != color){                //The pawns eat in diagonal.
+        if(pieces2.containsKey(box-11) && pieces2.get(box-11).getColor() != color){                //The pawns eat in diagonal.
           posiblesMovements.get(box-11).setVisible(true);
         }
-        if(pieces.containsKey(box+9) && pieces.get(box+9).getColor() != color){
+        if(pieces2.containsKey(box+9) && pieces2.get(box+9).getColor() != color){
           posiblesMovements.get(box+9).setVisible(true);
         }
       }
     }
-    private void towerPosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
+    private void towerPosiblePositions(HashMap<Integer, Dot> posiblesMovements,HashMap<Integer, Piece> pieces2,int box){
 
       /*
       *The tower can move upwards, downwards, leftwards and rightwards.
@@ -274,9 +277,9 @@ public class Board extends JPanel implements ActionListener {
        for(int i = 1; i <= 8 ; i++){
          // +++++++++++++ UPWARD +++++++++++++
          if(y+i < 9 && !pieceInMiddleUP){
-           if(validDot(box + i, pieces.get(box).getColor())){
+           if(validDot(pieces2,box + i, pieces2.get(box).getColor())){
              posiblesMovements.get(box + i).setVisible(true);
-             if(pieces.containsKey(box + i)){
+             if(pieces2.containsKey(box + i)){
                pieceInMiddleUP = true;
              }
            }else{
@@ -285,9 +288,9 @@ public class Board extends JPanel implements ActionListener {
          }
          // +++++++++++++ LEFTWARD +++++++++++++
          if(x-i > 0 && !pieceInMiddleLEFT){
-           if(validDot(box - i*10, pieces.get(box).getColor())){
+           if(validDot(pieces2,box - i*10, pieces2.get(box).getColor())){
              posiblesMovements.get(box - i*10).setVisible(true);
-             if(pieces.containsKey(box - i*10)){
+             if(pieces2.containsKey(box - i*10)){
                pieceInMiddleLEFT = true;
              }
            }else{
@@ -296,9 +299,9 @@ public class Board extends JPanel implements ActionListener {
          }
          // +++++++++++++ RIGHTWARD +++++++++++++
          if(x+i < 9 && !pieceInMiddleRIGHT){
-           if(validDot(box + i*10, pieces.get(box).getColor())){
+           if(validDot(pieces2,box + i*10, pieces2.get(box).getColor())){
              posiblesMovements.get(box + i*10).setVisible(true);
-             if(pieces.containsKey(box + i*10)){
+             if(pieces2.containsKey(box + i*10)){
                pieceInMiddleRIGHT = true;
              }
            }else{
@@ -308,9 +311,9 @@ public class Board extends JPanel implements ActionListener {
          }
          // +++++++++++++ DOWNWARD +++++++++++++
          if(y-i > 0 && !pieceInMiddleDOWN ){
-           if(validDot(box - i, pieces.get(box).getColor())){
+           if(validDot(pieces2,box - i, pieces2.get(box).getColor())){
              posiblesMovements.get(box - i).setVisible(true);
-             if(pieces.containsKey(box - i)){
+             if(pieces2.containsKey(box - i)){
                pieceInMiddleDOWN = true;
              }
            }else{
@@ -319,7 +322,7 @@ public class Board extends JPanel implements ActionListener {
          }
        }
     }
-    private void bishopPosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
+    private void bishopPosiblePositions(HashMap<Integer, Dot> posiblesMovements,HashMap<Integer, Piece> pieces2,int box){
       /*
       *The Bishop can move in diagonal. The behaviour is like the tower.
       *If there are a piece in middle the tower can't pass through them.
@@ -336,9 +339,10 @@ public class Board extends JPanel implements ActionListener {
      for(int i = 1; i < 9 ; i++){
        // +++++++++++++ UPWARD & RIGHTWARD +++++++++++++
        if(x+i < 9 && y+i < 9 && !pieceInMiddleUPRIGHT){
-         if(validDot(box + i*10 + i, pieces.get(box).getColor())){
+         System.out.println("BISHOP: "+ pieces2.get(box));
+         if(validDot(pieces2,box + i*10 + i, pieces2.get(box).getColor())){
            posiblesMovements.get(box + i*10 + i).setVisible(true);
-           if(pieces.containsKey(box + i*10 + i)){
+           if(pieces2.containsKey(box + i*10 + i)){
              pieceInMiddleUPRIGHT = true;
            }
          }else{
@@ -347,9 +351,9 @@ public class Board extends JPanel implements ActionListener {
        }
        // +++++++++++++ UPWARD & LEFTWARD +++++++++++++
        if(x-i > 0 && y+i < 9 && !pieceInMiddleUPLEFT){
-         if(validDot(box - i*10 + i, pieces.get(box).getColor())){
+         if(validDot(pieces2,box - i*10 + i, pieces2.get(box).getColor())){
            posiblesMovements.get(box - i*10 + i).setVisible(true);
-           if(pieces.containsKey(box - i*10 + i)){
+           if(pieces2.containsKey(box - i*10 + i)){
              pieceInMiddleUPLEFT = true;
            }
          }else{
@@ -358,9 +362,9 @@ public class Board extends JPanel implements ActionListener {
        }
        // +++++++++++++ DOWNWARD & RIGHTWARD +++++++++++++
        if(x+i < 9 && y-i > 0 && !pieceInMiddleDOWNRIGHT){
-         if(validDot(box + i*10 - i, pieces.get(box).getColor())){
+         if(validDot(pieces2,box + i*10 - i, pieces2.get(box).getColor())){
            posiblesMovements.get(box + i*10 - i).setVisible(true);
-           if(pieces.containsKey(box + i*10 - i)){
+           if(pieces2.containsKey(box + i*10 - i)){
              pieceInMiddleDOWNRIGHT = true;
            }
          }else{
@@ -370,9 +374,9 @@ public class Board extends JPanel implements ActionListener {
        }
        // +++++++++++++ DOWNWARD & LEFTWARD +++++++++++++
        if(x-i > 0 && y-i > 0 && !pieceInMiddleDOWNLEFT ){
-         if(validDot(box - i*10 - i, pieces.get(box).getColor())){
+         if(validDot(pieces2,box - i*10 - i, pieces2.get(box).getColor())){
            posiblesMovements.get(box - i*10 - i).setVisible(true);
-           if(pieces.containsKey(box - i*10 - i)){
+           if(pieces2.containsKey(box - i*10 - i)){
              pieceInMiddleDOWNLEFT = true;
            }
          }else{
@@ -381,7 +385,7 @@ public class Board extends JPanel implements ActionListener {
        }
      }
     }
-    private void horsePosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
+    private void horsePosiblePositions(HashMap<Integer, Dot> posiblesMovements,HashMap<Integer, Piece> pieces2,int box){
 
       /*
       * The Horse can moves in L.
@@ -390,28 +394,28 @@ public class Board extends JPanel implements ActionListener {
 
       // +++++++++++++ TOP POINTS ++++++++++++
       if(box%10 <= 6){
-        if(box/10 < 8 && validDot(box+12, pieces.get(box).getColor()) )
+        if(box/10 < 8 && validDot(pieces2,box+12, pieces2.get(box).getColor()) )
           posiblesMovements.get(box+12).setVisible(true);
-        if(box/10 > 1 && validDot(box-8, pieces.get(box).getColor()) )
+        if(box/10 > 1 && validDot(pieces2,box-8, pieces2.get(box).getColor()) )
           posiblesMovements.get(box-8).setVisible(true);
-        if(box/10 <= 6 && validDot(box+21, pieces.get(box).getColor()) )
+        if(box/10 <= 6 && validDot(pieces2,box+21, pieces2.get(box).getColor()) )
           posiblesMovements.get(box+21).setVisible(true);
-        if(box/10 >= 3 && validDot(box-19, pieces.get(box).getColor()) )
+        if(box/10 >= 3 && validDot(pieces2,box-19, pieces2.get(box).getColor()) )
           posiblesMovements.get(box-19).setVisible(true);
       }
       // +++++++++++++ BOTTON POINTS ++++++++++++
       if(box%10 >= 3){
-        if(box/10 < 8 && validDot(box+8, pieces.get(box).getColor()) )
+        if(box/10 < 8 && validDot(pieces2,box+8, pieces2.get(box).getColor()) )
           posiblesMovements.get(box+8).setVisible(true);
-        if(box/10 > 1 && validDot(box-12, pieces.get(box).getColor()) )
+        if(box/10 > 1 && validDot(pieces2,box-12, pieces2.get(box).getColor()) )
           posiblesMovements.get(box-12).setVisible(true);
-        if(box/10 <= 6 && validDot(box+19, pieces.get(box).getColor()) )
+        if(box/10 <= 6 && validDot(pieces2,box+19, pieces2.get(box).getColor()) )
           posiblesMovements.get(box+19).setVisible(true);
-        if(box/10 >= 3 && validDot(box-21, pieces.get(box).getColor()) )
+        if(box/10 >= 3 && validDot(pieces2,box-21, pieces.get(box).getColor()) )
           posiblesMovements.get(box-21).setVisible(true);
       }
     }
-    private void kingPosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
+    private void kingPosiblePositions(HashMap<Integer, Dot> posiblesMovements,HashMap<Integer, Piece> pieces2,int box){
 
       /*
       * The King is the most complicated piece to calculate de posible positions of the Chessboard
@@ -423,41 +427,41 @@ public class Board extends JPanel implements ActionListener {
 
 
       // ++++++++++ RIGHTWARD & SHORT CASTLE ++++++++++
-      if( validDot(box+10, pieces.get(box).getColor())){
+      if( validDot(pieces2,box+10, pieces2.get(box).getColor())){
        posiblesMovements.get(box + 10).setVisible(true);
        shortcastling = false;
-       if(!pieces.get(box).isMoved() && pieces.containsKey(box + 30) &&
-           pieces.get(box+30).getType() == TOWER && !pieces.get(box+30).isMoved()){
+       if(!pieces2.get(box).isMoved() && pieces2.containsKey(box + 30) &&
+           pieces2.get(box+30).getType() == TOWER && !pieces2.get(box+30).isMoved()){
          posiblesMovements.get(box + 20).setVisible(true);
          shortcastling = true;
        }
      }
       // ++++++++++ LEFTWARD & LONG CASTLE ++++++++++
-      if( validDot(box-10, pieces.get(box).getColor())){
+      if( validDot(pieces2,box-10, pieces2.get(box).getColor())){
         posiblesMovements.get(box - 10).setVisible(true);
         largecastling = false;
-        if(!pieces.get(box).isMoved() && pieces.containsKey(box - 40) &&
-            pieces.get(box-40).getType() == TOWER && !pieces.get(box-40).isMoved()){
+        if(!pieces2.get(box).isMoved() && pieces2.containsKey(box - 40) &&
+            pieces2.get(box-40).getType() == TOWER && !pieces2.get(box-40).isMoved()){
           posiblesMovements.get(box - 20).setVisible(true);
           largecastling = true;
         }
       }
       // ++++++++++ UPWARD ++++++++++
       if(box%10 < 8){  //Puntos superiores
-        if( validDot(box+1, pieces.get(box).getColor()))
+        if( validDot(pieces2,box+1, pieces2.get(box).getColor()))
           posiblesMovements.get(box + 1).setVisible(true);
-        if( validDot(box+11, pieces.get(box).getColor()))
+        if( validDot(pieces2,box+11, pieces2.get(box).getColor()))
           posiblesMovements.get(box + 11).setVisible(true);
-        if( validDot(box-9, pieces.get(box).getColor()))
+        if( validDot(pieces2,box-9, pieces2.get(box).getColor()))
           posiblesMovements.get(box - 9).setVisible(true);
       }
       // ++++++++++ DOWNWARD ++++++++++
       if(box%10 > 1){  //Puntos inferiores
-          if( validDot(box+9, pieces.get(box).getColor()))
+          if( validDot(pieces2,box+9, pieces2.get(box).getColor()))
             posiblesMovements.get(box + 9).setVisible(true);
-          if( validDot(box-1, pieces.get(box).getColor()))
+          if( validDot(pieces2,box-1, pieces2.get(box).getColor()))
             posiblesMovements.get(box - 1).setVisible(true);
-          if( validDot(box-11, pieces.get(box).getColor()))
+          if( validDot(pieces2,box-11, pieces2.get(box).getColor()))
             posiblesMovements.get(box - 11).setVisible(true);
         }
 
@@ -486,46 +490,30 @@ public class Board extends JPanel implements ActionListener {
 
 //++++++++++++++++++++++ DOTS DISPLAYING ++++++++++++++++++++++++++++
 
-    public void posibleMovement(HashMap<Integer, Dot> map, Piece piece2Move, int box){ //rules
+    public void posibleMovement(HashMap<Integer, Dot> map, HashMap<Integer, Piece> pieces2, Piece piece2Move, int box){ //rules
       //Esta usando el beginningBox de la clase Piece.
-      deletePosibleMovement();
-      int i = 0;
-      while(i < 8){
+        System.out.println("JFJSDJFDS"+ piece2Move + "box: " +box);
         switch(piece2Move.getType()){
-          case TOWER: if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1)){
-              towerPosiblePositions(map,box);
+          case TOWER:
+              towerPosiblePositions(map,pieces2,box);
               break;
-            }
-            break;
-          case HORSE:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) ){
-              horsePosiblePositions(map,box);
+          case HORSE:
+              horsePosiblePositions(map,pieces2,box);
               break;
-            }
-            break;
-          case BISHOP:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) ){
-              bishopPosiblePositions(map,box);
+          case BISHOP:
+              bishopPosiblePositions(map,pieces2,box);
               break;
-            }
-            break;
-          case KING:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) ){
-              kingPosiblePositions(map,box);
+          case KING:
+              kingPosiblePositions(map,pieces2,box);
               break;
-            }
-            break;
-          case QUEEN:if(!pieces.containsKey(((box+(box%10)+i)%8)+1) ){
-              towerPosiblePositions(map,box);
-              bishopPosiblePositions(map,box);
+          case QUEEN:
+              towerPosiblePositions(map,pieces2,box);
+              bishopPosiblePositions(map,pieces2,box);
               break;
-            }
-            break;
-          case PAWN: if(!pieces.containsKey(((box+(box%10)+i)%8)+1) ){
-              pawnPosiblePositions(map,box, piece2Move.getColor());
+          case PAWN:
+              pawnPosiblePositions(map,pieces2,box, piece2Move.getColor());
               break;
-            }
-            break;
         }
-        i++;
-      }
     }
     public void deletePosibleMovement(){
 
@@ -601,8 +589,14 @@ public class Board extends JPanel implements ActionListener {
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
                 deletePosibleMovement();
-                posibleMovement(posiblesMovements,pieces.get(boxPressed), boxPressed);
-                noCheck(pieces.get(boxPressed),((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);                                       //Valid movement if you skip the check with the move
+                posibleMovement(posiblesMovements,pieces,pieces.get(piecePressed), piecePressed);
+                System.out.println("-------------posiblesMovements ---------------");
+                for(Dot dot : posiblesMovements.values()){
+                  if(dot.isVisible()){
+                    System.out.println(dot.getBox());
+                  }
+                }
+                noCheck(pieces.get(piecePressed),((!isWhiteTurn) ? 1 : 0)*posBlackKing + ((isWhiteTurn) ? 1 : 0)*posWhiteKing); //Valid movement if you skip the check with the move
             // Choose where you want to move the piece
               }else if (isBoxPressed && isValid){
                 if(validBox){
@@ -613,16 +607,23 @@ public class Board extends JPanel implements ActionListener {
                       pieces.put(boxPressed, piece2);         // Add the piece removed to the new box
                       pieces.get(boxPressed).mousePressed(e);
                       pieces.get(boxPressed).setMove(true);   // Set de move to repaint
-
+                      System.out.println(pieces.get(boxPressed));
                       if(pieces.get(boxPressed).getType() == KING){
                         if(pieces.get(boxPressed).isWhite())            //Control de KING positions to calculate the possible check
                           posWhiteKing = boxPressed;
                         else
                           posBlackKing = boxPressed;
                       }
-
-                      isCheck(pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
+                      System.out.println("PIECE FALLA" + pieces.get(boxPressed) + "   box: " + boxPressed);
+                      deletePosibleMovement();
                       castling();
+                      if(isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed)){
+                        check = true;
+                      }else{
+                        check = false;
+                      }
+
+
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
                       isBoxPressed = false;
@@ -635,8 +636,10 @@ public class Board extends JPanel implements ActionListener {
                         strokepattern.mousePressed(e);
 
                         deletePosibleMovement();
-                        posibleMovement(posiblesMovements, pieces.get(boxPressed), boxPressed);
-                        noCheck(pieces.get(boxPressed),((!isWhiteTurn) ? 1 : 0)*posBlackKing + ((isWhiteTurn) ? 1 : 0)*posWhiteKing);                                       //Valid movement if you skip the check with the move
+                        posibleMovement(posiblesMovements,pieces, pieces.get(boxPressed), boxPressed);
+                        noCheck(pieces.get(boxPressed),((!isWhiteTurn) ? 1 : 0)*posBlackKing + ((isWhiteTurn) ? 1 : 0)*posWhiteKing);
+                        posiblesMovements2 = posiblesMovements;
+                        System.out.println("movements established");                                  //Valid movement if you skip the check with the move
                       // If the piece in the box isn't the same color as the turn, EAT the piece
                       }else{
                         System.out.println("MATANDO PIEZA");
@@ -647,10 +650,14 @@ public class Board extends JPanel implements ActionListener {
                         pieces.get(boxPressed).mousePressed(e);
                         pieces.get(boxPressed).setMove(true);
                         isWhiteTurn = !isWhiteTurn;
-                        isCheck(pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
+                        if(isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed)){
+                          check = true;
+                        }else{
+                          check = false;
+                        }
+                        deletePosibleMovement();
                         strokepattern.setVisible(false);
                         isBoxPressed = false;
-                        deletePosibleMovement();
                       }
                     }
                     // If the pawn arrive to the final, the pawn converts to the piece you want (QUEEN, BISHOP, HORSE, TOWER)
@@ -672,32 +679,36 @@ public class Board extends JPanel implements ActionListener {
           }
           return false;
         }
-        public void isCheck(Piece pie, int posOponentKing){
+        public boolean isCheck(HashMap<Integer, Piece> pieces2,Piece pie, int posOponentKing, int box){
           /*
           * Calculate if once moved, check if there are check
           */
-          posibleMovement(checkTest, pie, pie.getBox());
+          posibleMovement(checkTest,pieces2, pie, box);
           for (Dot dot : checkTest.values()){
             if(dot.isVisible() && dot.getBox() == posOponentKing){
-              check = true;
-              break;
-            }else if(dot.isVisible()){
-              check = false;
+              for(Dot dot2 : checkTest.values()){
+                dot2.setVisible(false);
+              }
+              return true;
             }
           }
+          for(Dot dot : checkTest.values()){
+            dot.setVisible(false);
+          }
+          return false;
+
         }
-        public void isCheckALLPieces(HashMap< Integer, Piece> pies , Piece pie, int posOponentKing){
+        public boolean isCheckALLPieces(HashMap< Integer, Piece> pies , Piece pie, int posOponentKing){
           /*
           * Calculate if there are a check with all oponent pieces
           */
           for(Piece p : pies.values()){
-            if(p.isWhite() != pie.isWhite()){
-              isCheck(p, posOponentKing);
-              if(check) break;
+            if(p.isWhite() != pie.isWhite() && p != pie){
+              if(isCheck(pies,p, posOponentKing, p.getBox()))
+                return true;
             }
           }
-
-
+          return false;
         }
         public void noCheck(Piece pie, int posKingTurn){
           /*
@@ -707,23 +718,32 @@ public class Board extends JPanel implements ActionListener {
           int position = pie.getBox();
 
           HashMap< Integer, Piece> pies = pieces;
-          HashMap< Integer, Dot> poss = posiblesMovements;
-
+          HashMap< Integer, Dot> poss56 = posiblesMovements;
+          Piece piece2 = null;
+          boolean thereWasAPiece = false;
           pies.remove(position);
-          for(Dot dot : poss.values()){
+          for(Dot dot : poss56.values()){
             if(dot.isVisible()){
+              if(pies.containsKey(dot.getBox())){
+                piece2 = pies.get(dot.getBox());
+                thereWasAPiece = true;
+              }
               pies.put(dot.getBox(), pie);
-              isCheckALLPieces(pies, pie, posKingTurn);
-              if(check){
+              if(isCheckALLPieces(pies, pie, posKingTurn)){
+                System.out.println("SET INVISIBLE");
                 dot.setVisible(false);
               }
               pies.remove(dot.getBox());
+              if(thereWasAPiece){
+                pies.put(dot.getBox(), piece2);
+                thereWasAPiece = false;
+              }
+
             }
 
           }
           pies.put(position, pie);
-          posiblesMovements = poss;
-
+          posiblesMovements2 = poss56;
         }
         public void castling(){
           if( (piecePressed == 51 && (boxPressed == 31 || boxPressed == 71)) ||

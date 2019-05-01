@@ -34,7 +34,6 @@ public class Piece {
     protected int type;
     protected boolean toMove;
     private boolean moved;
-    private HashMap<Integer, Dot> possibleMovement;
     //protected int futureMove;
 
     public Piece(boolean color, int type) {
@@ -45,7 +44,6 @@ public class Piece {
         this.type = type;
         this.toMove = false;
         this.moved = false;
-        this.possibleMovement= new HashMap<Integer, Dot>();
 
     }
     public int getType(){
@@ -111,12 +109,9 @@ public class Piece {
     public int getBox(){
       return beginningBox(x,y);
     }
-    public void calculatePossibleMovements(){
-      
-    }
-    public HashMap<Integer,Dot> getPossibleMovements(){
-      return possibleMovement;
-    }
+
+
+    
     public int beginningBox(int xi, int yi){
       int i = 0;
       int x = 9;

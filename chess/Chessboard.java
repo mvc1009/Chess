@@ -27,7 +27,7 @@ public class Chessboard {
     }
 
     private void initChessboard() {
-        loadImage("multimedia/chessboard.jpg");
+        loadImage("multimedia/chessboard2.jpg");
         getImageDimensions();
     }
     protected void loadImage(String imageName) {
@@ -45,5 +45,5 @@ public class Chessboard {
     public Image getImage() {
         return image;
     }
-    
+
 }
