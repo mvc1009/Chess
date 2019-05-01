@@ -602,7 +602,7 @@ public class Board extends JPanel implements ActionListener {
             if(firstPressed != 99 && pieces.containsKey(firstPressed)){
               isValid = validMove(boxPressed, firstPressed, posiblesMovements);
             }
-            
+
             // Choose the piece you want to move
             if(!isBoxPressed && pieces.containsKey(boxPressed) && pieces.get(boxPressed).isWhite() == isWhiteTurn){
                 isBoxPressed = true;
@@ -617,11 +617,21 @@ public class Board extends JPanel implements ActionListener {
                       Piece piece2 = pieces.get(piecePressed);
                       pieces.remove(piecePressed);            // Remove the piece Presed
                       pieces.put(boxPressed, piece2);         // Add the piece removed to the new box
-                      pieces.get(boxPressed).mousePressed(e);
-                      pieces.get(boxPressed).setMove(true);   // Set de move to repaint
+                      if(isWhiteTurn){
+
+                      }
+                      //if(noCheck()){                                  //Valid movement if you skip the check with the move
+                        pieces.get(boxPressed).mousePressed(e);
+                        pieces.get(boxPressed).setMove(true);   // Set de move to repaint
+                    /*  }else{
+                        piecce.remove(boxPressed);
+                        piecce.put(piecePressed, piece2);
+                        posiblesMovements.remove(boxPressed);
+                      }*/
+
 
                       if(pieces.get(boxPressed).getType() == KING){
-                        if(pieces.get(boxPressed).isWhite())
+                        if(pieces.get(boxPressed).isWhite())            //Control de KING positions to calculate the possible check
                           posWhiteKing = boxPressed;
                         else
                           posBlackKing = boxPressed;
@@ -682,6 +692,7 @@ public class Board extends JPanel implements ActionListener {
           return false;
         }
         public void isCheck(HashMap<Integer, Dot> posib, HashMap<Integer, Piece> pieces){
+
             for (Dot dot: posib.values()){
 
               if(dot.isVisible() && pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
