@@ -15,7 +15,7 @@ public class ChessGame extends JFrame {
 
     private void initUI() {
 
-        add(new Board(menu));
+        add(new Board(menu, this));
 
         setSize(1200, 700);
         setResizable(false);
@@ -29,5 +29,10 @@ public class ChessGame extends JFrame {
         EventQueue.invokeLater(() -> {
             this.setVisible(true);
         });
+    }
+    public void endGame(){
+      EventQueue.invokeLater(() -> {
+          this.setVisible(false);
+      });
     }
 }
