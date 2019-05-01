@@ -604,6 +604,7 @@ public class Board extends JPanel implements ActionListener {
             boolean isValid = false;
             boxPressed = beginningBox(x,y);
             boolean validBox = isValidBox(boxPressed);
+
             if(firstPressed != 99 && pieces.containsKey(firstPressed)){
               isValid = validMove(boxPressed, firstPressed, posiblesMovements);
             }
@@ -620,33 +621,12 @@ public class Board extends JPanel implements ActionListener {
                 if(validBox){
                     if(!pieces.containsKey(boxPressed)){      // If the piece isn't in the HashMap
                       Piece piece2 = pieces.get(piecePressed);
-                      pieces.remove(piecePressed);            // Remove the piece Presed
-                      pieces.put(boxPressed, piece2);         // Add the piece removed to the new box
-                      if(isWhiteTurn){
-
-                      }
-                      //if(noCheck()){                                  //Valid movement if you skip the check with the move
-                        pieces.get(boxPressed).mousePressed(e);
-                        pieces.get(boxPressed).setMove(true);   // Set de move to repaint
-                    /*  }else{
-                        piecce.remove(boxPressed);
-                        piecce.put(piecePressed, piece2);
-                        posiblesMovements.remove(boxPressed);
-                      }*/
-
-
-                      if(pieces.get(boxPressed).getType() == KING){
-                        if(pieces.get(boxPressed).isWhite())            //Control de KING positions to calculate the possible check
-                          posWhiteKing = boxPressed;
-                        else
-                          posBlackKing = boxPressed;
-                      }
-
+                      pieces.remove(piecePressed);            // Eliminamos la ficha que reponemos
+                      pieces.put(boxPressed, piece2);         // Añadimos la nueva pieza
+                      pieces.get(boxPressed).mousePressed(e); // Nueva posición de la pieza
+                      pieces.get(boxPressed).setMove(true);   // Finalización del movimiento
                       isCheck(posiblesMovements, pieces);
                       castling();
-                      deletePosibleMovement();
-                      posibleMovement(pieces.get(boxPressed),boxPressed);
-                      isCheck(posiblesMovements,pieces);
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
                       isBoxPressed = false;
