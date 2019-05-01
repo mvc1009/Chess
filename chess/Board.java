@@ -424,41 +424,41 @@ public class Board extends JPanel implements ActionListener {
 
 
       // ++++++++++ RIGHTWARD & SHORT CASTLE ++++++++++
-      if( validDot(box+10, pieces.get(box).getColor()) && goodMovement(pieces, pieces.get(box),box+10) ){
+      if( validDot(box+10, pieces.get(box).getColor()) ){
        posiblesMovements.get(box + 10).setVisible(true);
        shortcastling = false;
        if(!pieces.get(box).isMoved() && pieces.containsKey(box + 30) &&
-           pieces.get(box+30).getType() == TOWER && !pieces.get(box+30).isMoved() && goodMovement(pieces,pieces.get(box),box+20)){
+           pieces.get(box+30).getType() == TOWER && !pieces.get(box+30).isMoved()) {
          posiblesMovements.get(box + 20).setVisible(true);
          shortcastling = true;
        }
      }
       // ++++++++++ LEFTWARD & LONG CASTLE ++++++++++
-      if( validDot(box-10, pieces.get(box).getColor())&& goodMovement(pieces,pieces.get(box),box-10) ){
+      if( validDot(box-10, pieces.get(box).getColor())) {
         posiblesMovements.get(box - 10).setVisible(true);
         largecastling = false;
         if(!pieces.get(box).isMoved() && pieces.containsKey(box - 40) &&
-            pieces.get(box-40).getType() == TOWER && !pieces.get(box-40).isMoved()&& goodMovement(pieces,pieces.get(box),box-20)&& goodMovement(pieces,pieces.get(box),box-30)){
+            pieces.get(box-40).getType() == TOWER && !pieces.get(box-40).isMoved()) {
           posiblesMovements.get(box - 20).setVisible(true);
           largecastling = true;
         }
       }
       // ++++++++++ UPWARD ++++++++++
       if(box%10 < 8){  //Puntos superiores
-        if( validDot(box+1, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box+1))
+        if( validDot(box+1, pieces.get(box).getColor()) )
           posiblesMovements.get(box + 1).setVisible(true);
-        if( validDot(box+11, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box+11))
+        if( validDot(box+11, pieces.get(box).getColor()) )
           posiblesMovements.get(box + 11).setVisible(true);
-        if( validDot(box-9, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box-9))
+        if( validDot(box-9, pieces.get(box).getColor()))
           posiblesMovements.get(box - 9).setVisible(true);
       }
       // ++++++++++ DOWNWARD ++++++++++
       if(box%10 > 1){  //Puntos inferiores
-          if( validDot(box+9, pieces.get(box).getColor())&& goodMovement(pieces,pieces.get(box),box+9) )
+          if( validDot(box+9, pieces.get(box).getColor()) )
             posiblesMovements.get(box + 9).setVisible(true);
-          if( validDot(box-1, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box-1))
+          if( validDot(box-1, pieces.get(box).getColor()) )
             posiblesMovements.get(box - 1).setVisible(true);
-          if( validDot(box-11, pieces.get(box).getColor()) && goodMovement(pieces,pieces.get(box),box-11))
+          if( validDot(box-11, pieces.get(box).getColor()) )
             posiblesMovements.get(box - 11).setVisible(true);
         }
 
@@ -467,21 +467,7 @@ public class Board extends JPanel implements ActionListener {
         checkMate = true;
       }
     }
-    public boolean goodMovement(HashMap<Integer, Piece> pieces, Piece piece, int box){
-          HashMap<Integer, Dot> posbm = posiblesMovements;
-          for(Piece pie : pieces.values()){
-            if(pie.getColor() != piece.getColor()){
-              posibleMovement(pie, pie.beginningBox(pie.getX(),pie.getY()));
-              if(posiblesMovements.get(box).isVisible()){
-                posiblesMovements = posbm;
-                return false;
-              }
-            }
 
-          }
-          posiblesMovements = posbm;
-          return true;
-        }
 //++++++++++++++++++ UPDATING THE CHESSBOARD +++++++++++++++++
 
 //Updating the yellow square arround the selected piece
@@ -614,10 +600,11 @@ public class Board extends JPanel implements ActionListener {
                 isBoxPressed = true;
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
+                isCheck(pieces.get(boxPressed).getColor() );
                 posibleMovement(pieces.get(boxPressed),boxPressed);
 
             // Choose where you want to move the piece
-              }else if (isBoxPressed && isValid){
+            }else if (isBoxPressed && isValid){
                 if(validBox){
                     if(!pieces.containsKey(boxPressed)){      // If the piece isn't in the HashMap
                       Piece piece2 = pieces.get(piecePressed);
@@ -625,7 +612,7 @@ public class Board extends JPanel implements ActionListener {
                       pieces.put(boxPressed, piece2);         // Añadimos la nueva pieza
                       pieces.get(boxPressed).mousePressed(e); // Nueva posición de la pieza
                       pieces.get(boxPressed).setMove(true);   // Finalización del movimiento
-                      isCheck(posiblesMovements, pieces);
+              //
                       castling();
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
@@ -654,9 +641,7 @@ public class Board extends JPanel implements ActionListener {
                         pieces.get(boxPressed).mousePressed(e);
                         pieces.get(boxPressed).setMove(true);
                         isWhiteTurn = !isWhiteTurn;
-                        deletePosibleMovement();
-                        posibleMovement(pieces.get(boxPressed),boxPressed);
-                        isCheck(posiblesMovements, pieces);
+          //
                         strokepattern.setVisible(false);
                         isBoxPressed = false;
                         deletePosibleMovement();
@@ -681,24 +666,23 @@ public class Board extends JPanel implements ActionListener {
           }
           return false;
         }
-        public void isCheck(HashMap<Integer, Dot> posib, HashMap<Integer, Piece> pieces){
-
-            for (Dot dot: posib.values()){
-
-              if(dot.isVisible() && pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
-                check = true;
-                //System.out.print(dot.getBox() + " ");
-                //System.out.println("JAQUE");
-                break;
-              }else if (dot.isVisible()){
-                check = false;
-                //System.out.print(dot.getBox() + " ");
-                //System.out.println("NO JAQUE");
-
+        public void isCheck(boolean color){ // (HashMap<Integer, Dot> posib, HashMap<Integer, Piece> pieces){
+          //Comprovamos para todas las piezas si alguna pone al rey en jake
+          check=false;
+          for (Piece piece: pieces.values()){
+            if(piece.getColor() == !color){
+              posibleMovement(piece, piece.getBox());
+              for (Dot dot: posiblesMovements.values()){
+                if(dot.isVisible() && pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
+                  check = true;
+                  break;
+                }
               }
+              deletePosibleMovement();
             }
-            //System.out.println("----------------------");
           }
+        }
+
         public void castling(){
           if( (piecePressed == 51 && (boxPressed == 31 || boxPressed == 71)) ||
               (piecePressed == 58 && (boxPressed == 38 || boxPressed == 78)) ){   // white castling

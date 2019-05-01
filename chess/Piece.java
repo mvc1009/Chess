@@ -103,9 +103,8 @@ public class Piece {
       dy = INITIAL_Y - STEP*((box-1)%10);
     }
 
-    public void moveToShow(int x,int y){
-      dx= x;
-      dy = y;
+    public int getBox(){
+      return beginningBox(x, y);
     }
 
     public int beginningBox(int xi, int yi){
