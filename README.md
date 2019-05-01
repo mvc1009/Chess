@@ -7,12 +7,12 @@ All media files that we use are [here!][medialink]
 ***
 
 ## What we want to do?
-In the future we want to implement two versions for this game. The Player vs Player (PVP) onine, and the Player vs Computer (PVC) implemmented with IA.
+In the future we want to implement two versions for this game. The Player vs Player (PVP) onine, and the Player vs Computer (PVC) implemmented with AI.
 
 ***
 
-## How we did?
-We considered to do a class Piece and subclass for all the pieces. All piecces of the chessboard has treated as a object with an [ImageIcon][ImageIcon]. We treat the Cheesboard like the background only an image that is displayed on a X and Y cordinates.
+## How we did it?
+We considered to do a class Piece and subclass for all the pieces. All pieces of the chessboard has treated as a object with an [ImageIcon][ImageIcon]. We treat the Cheesboard like the background only an image that is displayed on a X and Y cordinates.
 
 We established for all the code the following statements:
 - **About colors:** White -> TRUE, Black -> FALSE
