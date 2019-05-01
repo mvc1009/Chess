@@ -26,7 +26,8 @@ public class Board extends JPanel implements ActionListener {
     * We simbolize with a yellow DOT the possible positions of the selected piece. (Dot)
     * To remark the piece that is selected from the user, we print a yellow Square arround the box. (Stroke Pattern)
     */
-
+    public QuitButtonEx menu;
+    public ChessGame game;
     public static final int TOWER = 1;
     public static final int HORSE = 2;
     public static final int BISHOP = 3;
@@ -68,7 +69,9 @@ public class Board extends JPanel implements ActionListener {
 
     private int posWhiteKing = 51;
     private int posBlackKing = 58;
-    public Board() {
+    public Board(QuitButtonEx menu, ChessGame game) {
+        this.menu = menu;
+        this.game = game;
         initBoard();
         initialPiecesPositions();
         initialPosiblePositions();
@@ -464,11 +467,6 @@ public class Board extends JPanel implements ActionListener {
           if( validDot(pieces2,box-11, pieces2.get(box).getColor()))
             posiblesMovements.get(box - 11).setVisible(true);
         }
-
-      // +++++++ CHECKMATE +++++++++++
-      if(check && posiblesMovements.size() == 0){
-        checkMate = true;
-      }
     }
 
 //++++++++++++++++++ UPDATING THE CHESSBOARD +++++++++++++++++
@@ -526,6 +524,11 @@ public class Board extends JPanel implements ActionListener {
       }
     }
 
+    // +++++++++++++++++++++  FINISHIG THE GAME -> CHECKMATE ++++++++++++++++++++++++
+       public void endGame(){
+          EndGame end = new EndGame(this);
+
+       }
 // +++++++++++++++++++++  FUNCTIONS HitTestAdapter USES ++++++++++++++++++++++++
     public int beginningBox(int xi, int yi){
 
@@ -590,12 +593,6 @@ public class Board extends JPanel implements ActionListener {
                 strokepattern.mousePressed(e);
                 deletePosibleMovement();
                 posibleMovement(posiblesMovements,pieces,pieces.get(piecePressed), piecePressed);
-                System.out.println("-------------posiblesMovements ---------------");
-                for(Dot dot : posiblesMovements.values()){
-                  if(dot.isVisible()){
-                    System.out.println(dot.getBox());
-                  }
-                }
                 noCheck(pieces.get(piecePressed),((!isWhiteTurn) ? 1 : 0)*posBlackKing + ((isWhiteTurn) ? 1 : 0)*posWhiteKing); //Valid movement if you skip the check with the move
             // Choose where you want to move the piece
               }else if (isBoxPressed && isValid){
@@ -614,16 +611,13 @@ public class Board extends JPanel implements ActionListener {
                         else
                           posBlackKing = boxPressed;
                       }
-                      System.out.println("PIECE FALLA" + pieces.get(boxPressed) + "   box: " + boxPressed);
                       deletePosibleMovement();
                       castling();
-                      if(isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed)){
-                        check = true;
-                      }else{
-                        check = false;
+                      check = isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed);
+                      checkMate = isCheckMate(pieces.get(boxPressed));
+                      if(checkMate){
+                        endGame();
                       }
-
-
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
                       isBoxPressed = false;
@@ -650,10 +644,10 @@ public class Board extends JPanel implements ActionListener {
                         pieces.get(boxPressed).mousePressed(e);
                         pieces.get(boxPressed).setMove(true);
                         isWhiteTurn = !isWhiteTurn;
-                        if(isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed)){
-                          check = true;
-                        }else{
-                          check = false;
+                        check = isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed);
+                        checkMate = isCheckMate(pieces.get(boxPressed));
+                        if(checkMate){
+                          endGame();
                         }
                         deletePosibleMovement();
                         strokepattern.setVisible(false);
@@ -744,6 +738,26 @@ public class Board extends JPanel implements ActionListener {
           }
           pies.put(position, pie);
           posiblesMovements2 = poss56;
+        }
+        public boolean isCheckMate(Piece pie){
+          HashMap< Integer, Piece> pies = pieces;
+            if(check){
+              for(Piece p : pies.values()){
+                if(p.isWhite() != pie.isWhite()){
+                  posibleMovement(checkTest, pies, p, p.getBox());
+                  for(Dot dot : checkTest.values()){
+                    if(dot.isVisible()){
+                      return false;
+                    }
+                  }
+
+                }
+              }
+              return true;
+            }
+            return false;
+
+
         }
         public void castling(){
           if( (piecePressed == 51 && (boxPressed == 31 || boxPressed == 71)) ||

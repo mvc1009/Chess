@@ -6,14 +6,15 @@ import javax.swing.JFrame;
 public class ChessGame extends JFrame {
 
     private boolean chessgameVisible = false;
-    public ChessGame() {
-
+    private QuitButtonEx menu;
+    public ChessGame(QuitButtonEx menu) {
+        this.menu = menu;
         initUI();
     }
 
     private void initUI() {
 
-        add(new Board());
+        add(new Board(menu, this));
 
         setSize(1200, 700);
         setResizable(false);
@@ -28,5 +29,10 @@ public class ChessGame extends JFrame {
             ChessGame ex = new ChessGame();
             ex.setVisible(true);
         });
+    }
+    public void endGame(){
+      EventQueue.invokeLater(() -> {
+          this.setVisible(false);
+      });
     }
 }
