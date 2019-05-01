@@ -580,6 +580,9 @@ public class Board extends JPanel implements ActionListener {
             boolean isValid = false;
             boxPressed = beginningBox(x,y);
             boolean validBox = isValidBox(boxPressed);
+            if(checkMate){
+              endGame();
+            }
             if(firstPressed != 99 && pieces.containsKey(firstPressed)){
               isValid = validMove(boxPressed, firstPressed, posiblesMovements);
             }

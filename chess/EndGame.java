@@ -29,7 +29,7 @@ public class EndGame implements ActionListener {
     butt.setContentAreaFilled(true);
     butt.setBorderPainted(true);
     butt.setBorder(null);
-    butt.setBounds(0, 40 , 80, 80);
+    butt.setBounds(100, 60 , 100, 20);
     butt.setActionCommand("BACK");
     butt.addActionListener(this);
 
@@ -47,13 +47,13 @@ public class EndGame implements ActionListener {
         msg = msg + "BLACK";
       }
     JLabel texto = new JLabel (msg);
-    texto.setBounds(20, 0, 120, 40);
+    texto.setBounds(20, 0, 300, 40);
 
     panel.add(texto);
     panel.add(butt);
 
     endgame.add(panel);
-    endgame.setSize(165,240);
+    endgame.setSize(300,150);
 
     endgame.setTitle("CHECK MATE");
     endgame.setLocationRelativeTo(null);
@@ -62,7 +62,6 @@ public class EndGame implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e){
     if(e.getActionCommand() == "BACK"){
-      b.menu.setVisible(true);
       b.game.endGame();
     }
   }

@@ -32,6 +32,7 @@ public class ChessGame extends JFrame {
     public void endGame(){
       EventQueue.invokeLater(() -> {
           this.setVisible(false);
+          menu.setVisible(true);
       });
     }
 }
