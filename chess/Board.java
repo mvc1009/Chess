@@ -64,7 +64,7 @@ public class Board extends JPanel implements ActionListener {
     private boolean shortcastling = false;
 
     private boolean check = false;
-    private boolean checkMate = true;
+    private boolean checkMate = false;
     private boolean pawnInChangingPosition = false;
 
     private int posWhiteKing = 51;
@@ -613,7 +613,7 @@ public class Board extends JPanel implements ActionListener {
                       deletePosibleMovement();
                       castling();
                       check = isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed);
-                      checkMate = isCheckMate(pieces.get(boxPressed));
+                      checkMate = isCheckMate();
                       if(checkMate){
                         endGame();
                       }
@@ -639,15 +639,17 @@ public class Board extends JPanel implements ActionListener {
                         pieces.put(boxPressed, piece2);
                         pieces.get(boxPressed).mousePressed(e);
                         pieces.get(boxPressed).setMove(true);
-                        isWhiteTurn = !isWhiteTurn;
+                        deletePosibleMovement();
                         check = isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed);
-                        checkMate = isCheckMate(pieces.get(boxPressed));
+                        System.out.println("CHECK : " + check);
+                        checkMate = isCheckMate();
                         if(checkMate){
                           endGame();
                         }
-                        deletePosibleMovement();
                         strokepattern.setVisible(false);
                         isBoxPressed = false;
+                        isWhiteTurn = !isWhiteTurn;
+
                       }
                     }
                     // If the pawn arrive to the final, the pawn converts to the piece you want (QUEEN, BISHOP, HORSE, TOWER)
@@ -700,13 +702,25 @@ public class Board extends JPanel implements ActionListener {
           }
           return false;
         }
+        public boolean isCheckALLPiecesMate(HashMap< Integer, Piece> pies , Piece pie, int posOponentKing){
+          /*
+          * Calculate if there are a check with all oponent pieces
+          */
+          for(Piece p : pies.values()){
+            if(p.isWhite() == pie.isWhite() && p != pie){
+              if(isCheck(pies,p, posOponentKing, p.getBox()))
+                return true;
+            }
+          }
+          return false;
+        }
         public void noCheck(Piece pie, int posKingTurn){
           /*
           * Once obtained the possible positions we need to discart
           * the possible position where if you moved you have been on check
           */
+          int posKing = posKingTurn;
           int position = pie.getBox();
-
           HashMap< Integer, Piece> pies = pieces;
           HashMap< Integer, Dot> poss56 = posiblesMovements;
           Piece piece2 = null;
@@ -719,7 +733,10 @@ public class Board extends JPanel implements ActionListener {
                 thereWasAPiece = true;
               }
               pies.put(dot.getBox(), pie);
-              if(isCheckALLPieces(pies, pie, posKingTurn)){
+              if(pie.getType() == KING){
+                posKing = dot.getBox();
+              }
+              if(isCheckALLPieces(pies, pie, posKing)){
                 dot.setVisible(false);
               }
               pies.remove(dot.getBox());
@@ -734,22 +751,63 @@ public class Board extends JPanel implements ActionListener {
           pies.put(position, pie);
           posiblesMovements2 = poss56;
         }
-        public boolean isCheckMate(Piece pie){
+        public void noCheckMate(Piece pie, int posKingTurn){
+          /*
+          * Once obtained the possible positions we need to discart
+          * the possible position where if you moved you have been on check
+          */
+          int posKing = posKingTurn;
+          int position = pie.getBox();
+          HashMap< Integer, Piece> pies = pieces;
+          HashMap< Integer, Dot> poss56 = posiblesMovements;
+          Piece piece2 = null;
+          boolean thereWasAPiece = false;
+          pies.remove(position);
+          for(Dot dot : poss56.values()){
+            if(dot.isVisible()){
+              if(pies.containsKey(dot.getBox())){
+                piece2 = pies.get(dot.getBox());
+                thereWasAPiece = true;
+              }
+              pies.put(dot.getBox(), pie);
+              if(pie.getType() == KING){
+                posKing = dot.getBox();
+              }
+              if(isCheckALLPiecesMate(pies, pie, posKing)){
+                dot.setVisible(false);
+              }
+              pies.remove(dot.getBox());
+              if(thereWasAPiece){
+                pies.put(dot.getBox(), piece2);
+                thereWasAPiece = false;
+              }
+
+            }
+
+          }
+          pies.put(position, pie);
+          posiblesMovements2 = poss56;
+        }
+        public boolean isCheckMate(){
           HashMap< Integer, Piece> pies = pieces;
             if(check){
               for(Piece p : pies.values()){
-                if(p.isWhite() != pie.isWhite()){
+                if(p.isWhite() == isWhiteTurn){
                   posibleMovement(checkTest, pies, p, p.getBox());
+                  noCheckMate(p,((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
                   for(Dot dot : checkTest.values()){
                     if(dot.isVisible()){
+                      System.out.println("----------NOT CHECKMATE-------------");
+                      System.out.println(dot.getBox());
                       return false;
+
                     }
                   }
-
                 }
               }
               return true;
             }
+            System.out.println("------------SDFSDFSDF--------------");
             return false;
 
 

@@ -63,6 +63,7 @@ public class EndGame implements ActionListener {
   public void actionPerformed(ActionEvent e){
     if(e.getActionCommand() == "BACK"){
       b.game.endGame();
+      b.menu.menu();
     }
   }
 }

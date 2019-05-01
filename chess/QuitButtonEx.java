@@ -27,7 +27,7 @@ public class QuitButtonEx extends JPanel implements ActionListener{
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void menu() {
+    public void menu() {
 
       //BUTTONS
       JButton playButton = new JButton(new ImageIcon("multimedia/play.png"));
