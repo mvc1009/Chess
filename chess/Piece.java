@@ -4,6 +4,8 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+
 
 public class Piece {
 
@@ -37,7 +39,7 @@ public class Piece {
     private HashMap<Integer, Dot> possibleMovement;
     //protected int futureMove;
 
-    public Piece(boolean color, int type) {
+    public Piece(boolean color, int type, HashMap<Integer, Dot> possibleMovement) {
 
         this.x = 0;
         this.y = 0;
@@ -45,7 +47,7 @@ public class Piece {
         this.type = type;
         this.toMove = false;
         this.moved = false;
-        this.possibleMovement= new HashMap<Integer, Dot>();
+        this.possibleMovement = possibleMovement;
 
     }
     public int getType(){
@@ -111,8 +113,8 @@ public class Piece {
     public int getBox(){
       return beginningBox(x,y);
     }
-    public void calculatePossibleMovements(){
-      
+    public void setPossibleMovements(HashMap<Integer,Dot> possibleMovement){
+      this.possibleMovement = possibleMovement;
     }
     public HashMap<Integer,Dot> getPossibleMovements(){
       return possibleMovement;

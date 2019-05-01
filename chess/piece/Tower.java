@@ -3,6 +3,7 @@ package chess.piece;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 import chess.*;
 
@@ -10,8 +11,8 @@ public class Tower extends Piece {
 
     private boolean site; //true right -> false left
 
-    public Tower(boolean color, boolean site) {
-        super(color, TOWER);
+    public Tower(boolean color, boolean site,HashMap<Integer, Dot> possibleMovement) {
+        super(color, TOWER, possibleMovement);
         this.site = site;
         initTower();
 

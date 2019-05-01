@@ -4,10 +4,12 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import chess.*;
+import java.util.HashMap;
+
 public class King extends Piece {
 
-    public King(boolean color) {
-        super(color, KING);
+    public King(boolean color,HashMap<Integer, Dot> possibleMovement) {
+        super(color, KING, possibleMovement);
         initKing();
     }
 

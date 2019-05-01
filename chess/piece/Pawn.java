@@ -4,12 +4,14 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import chess.*;
+import java.util.HashMap;
+
 public class Pawn extends Piece {
 
     private int site; //true right -> false left
 
-    public Pawn(boolean color, int site) {
-        super(color, PAWN);
+    public Pawn(boolean color, int site,HashMap<Integer, Dot> possibleMovement) {
+        super(color, PAWN, possibleMovement);
         this.site = site;
         initPawn();
 

@@ -4,12 +4,13 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import chess.*;
+import java.util.HashMap;
 
 public class Queen extends Piece {
 
 
-    public Queen(boolean color) {
-        super(color, QUEEN);
+    public Queen(boolean color,HashMap<Integer, Dot> possibleMovement) {
+        super(color, QUEEN, possibleMovement);
         initQueen();
     }
 
@@ -24,5 +25,5 @@ public class Queen extends Piece {
         this.y = INITIAL_Y - (((!color) ? 1 : 0) * STEP * 7);
     }
 
-  
+
 }

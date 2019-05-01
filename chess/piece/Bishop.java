@@ -4,12 +4,14 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import chess.*;
+import java.util.HashMap;
+
 public class Bishop extends Piece {
 
     private boolean site; //true right -> false left
 
-    public Bishop(boolean color, boolean site) {
-        super(color, BISHOP);
+    public Bishop(boolean color, boolean site, HashMap<Integer, Dot> possibleMovement) {
+        super(color, BISHOP, possibleMovement);
         this.site = site;
         initBishop();
 

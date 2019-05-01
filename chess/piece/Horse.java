@@ -4,12 +4,14 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import chess.*;
+import java.util.HashMap;
+
 public class Horse extends Piece {
 
     private boolean site; //true right -> false left
 
-    public Horse(boolean color, boolean site) {
-        super(color, HORSE);
+    public Horse(boolean color, boolean site, HashMap<Integer, Dot> possibleMovement) {
+        super(color, HORSE, possibleMovement);
         this.site = site;
         initHorse();
     }
