@@ -658,6 +658,11 @@ public class Board extends JPanel implements ActionListener {
                       // If the piece in the box isn't the same color as the turn, EAT the piece
                       }else{
                         Piece piece2 = pieces.get(piecePressed);
+                        if(pieces.get(boxPressed).getType() == KING){
+                          pieces.remove(piecePressed);
+                          pieces.remove(boxPressed);
+                          System.out.println("fin");
+                        }
                         pieces.remove(piecePressed);
                         pieces.remove(boxPressed);
                         pieces.put(boxPressed, piece2);
@@ -697,17 +702,17 @@ public class Board extends JPanel implements ActionListener {
 
               if(dot.isVisible() && pieces.containsKey(dot.getBox()) && pieces.get(dot.getBox()).getType() == KING){
                 check = true;
-                System.out.print(dot.getBox() + " ");
-                System.out.println("JAQUE");
+                //System.out.print(dot.getBox() + " ");
+                //System.out.println("JAQUE");
                 break;
               }else if (dot.isVisible()){
                 check = false;
-                System.out.print(dot.getBox() + " ");
-                System.out.println("NO JAQUE");
+                //System.out.print(dot.getBox() + " ");
+                //System.out.println("NO JAQUE");
 
               }
             }
-            System.out.println("----------------------");
+            //System.out.println("----------------------");
           }
         public void castling(){
           if( (piecePressed == 51 && (boxPressed == 31 || boxPressed == 71)) ||
