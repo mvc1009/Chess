@@ -52,6 +52,7 @@ public class Board extends JPanel implements ActionListener {
 
     HashMap<Integer, Piece> pieces;
     HashMap<Integer, Dot> posiblesMovements;
+    HashMap<Integer, Dot> checkTest;
     HitTestAdapter mouse;
     private int boxPressed = 99;
     private int piecePressed = 99;
@@ -199,9 +200,12 @@ public class Board extends JPanel implements ActionListener {
 //We put a DOT that when it is visible, these means that there are a possible movement
     private void initialPosiblePositions(){
       posiblesMovements = new HashMap<Integer, Dot>();
+      checkTest = new HashMap<Integer, Dot>();
+
       for(int i = 10; i <= 88; i++){
         if(i%10 != 9){
           posiblesMovements.put(i, new Dot(i));
+          checkTest.put(i, new Dot(i));
         }
       }
     }
@@ -224,7 +228,7 @@ public class Board extends JPanel implements ActionListener {
 
 //Diferent possible positions of each type of piece
 
-    private void pawnPosiblePositions(int box, boolean color){
+    private void pawnPosiblePositions(HashMap<Integer, Dot> posiblesMovements, int box, boolean color){
       if( color ) {     //White Pawns
         if(!pieces.containsKey(box+1))                                                            //Print a DOT if there are any piece in front of them
           posiblesMovements.get(box+1).setVisible(true);
@@ -252,7 +256,7 @@ public class Board extends JPanel implements ActionListener {
         }
       }
     }
-    private void towerPosiblePositions(int box){
+    private void towerPosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
 
       /*
       *The tower can move upwards, downwards, leftwards and rightwards.
@@ -315,7 +319,7 @@ public class Board extends JPanel implements ActionListener {
          }
        }
     }
-    private void bishopPosiblePositions(int box){
+    private void bishopPosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
       /*
       *The Bishop can move in diagonal. The behaviour is like the tower.
       *If there are a piece in middle the tower can't pass through them.
@@ -377,7 +381,7 @@ public class Board extends JPanel implements ActionListener {
        }
      }
     }
-    private void horsePosiblePositions(int box){
+    private void horsePosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
 
       /*
       * The Horse can moves in L.
@@ -407,7 +411,7 @@ public class Board extends JPanel implements ActionListener {
           posiblesMovements.get(box-21).setVisible(true);
       }
     }
-    private void kingPosiblePositions(int box){
+    private void kingPosiblePositions(HashMap<Integer, Dot> posiblesMovements,int box){
 
       /*
       * The King is the most complicated piece to calculate de posible positions of the Chessboard
@@ -482,40 +486,40 @@ public class Board extends JPanel implements ActionListener {
 
 //++++++++++++++++++++++ DOTS DISPLAYING ++++++++++++++++++++++++++++
 
-    public void posibleMovement(Piece piece2Move, int box){ //rules
+    public void posibleMovement(HashMap<Integer, Dot> map, Piece piece2Move, int box){ //rules
       //Esta usando el beginningBox de la clase Piece.
       deletePosibleMovement();
       int i = 0;
       while(i < 8){
         switch(piece2Move.getType()){
           case TOWER: if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1)){
-              towerPosiblePositions(box);
+              towerPosiblePositions(map,box);
               break;
             }
             break;
           case HORSE:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) ){
-              horsePosiblePositions(box);
+              horsePosiblePositions(map,box);
               break;
             }
             break;
           case BISHOP:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) ){
-              bishopPosiblePositions(box);
+              bishopPosiblePositions(map,box);
               break;
             }
             break;
           case KING:if(!pieces.containsKey((((box/10)*10+(box%10)+i)%8)+1) ){
-              kingPosiblePositions(box);
+              kingPosiblePositions(map,box);
               break;
             }
             break;
           case QUEEN:if(!pieces.containsKey(((box+(box%10)+i)%8)+1) ){
-              towerPosiblePositions(box);
-              bishopPosiblePositions(box);
+              towerPosiblePositions(map,box);
+              bishopPosiblePositions(map,box);
               break;
             }
             break;
           case PAWN: if(!pieces.containsKey(((box+(box%10)+i)%8)+1) ){
-              pawnPosiblePositions(box, piece2Move.getColor());
+              pawnPosiblePositions(map,box, piece2Move.getColor());
               break;
             }
             break;
@@ -597,7 +601,8 @@ public class Board extends JPanel implements ActionListener {
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
                 deletePosibleMovement();
-                noCheck(pieces.get(boxPressed),((!isWhiteTurn) ? 1 : 0)*posBlackKing + ((isWhiteTurn) ? 1 : 0)*posWhiteKing);                                       //Valid movement if you skip the check with the move
+                posibleMovement(posiblesMovements,pieces.get(boxPressed), boxPressed);
+                noCheck(pieces.get(boxPressed),((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);                                       //Valid movement if you skip the check with the move
             // Choose where you want to move the piece
               }else if (isBoxPressed && isValid){
                 if(validBox){
@@ -618,7 +623,6 @@ public class Board extends JPanel implements ActionListener {
 
                       isCheck(pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
                       castling();
-                      deletePosibleMovement();
                       strokepattern.setVisible(false);
                       isWhiteTurn = !isWhiteTurn;
                       isBoxPressed = false;
@@ -631,6 +635,7 @@ public class Board extends JPanel implements ActionListener {
                         strokepattern.mousePressed(e);
 
                         deletePosibleMovement();
+                        posibleMovement(posiblesMovements, pieces.get(boxPressed), boxPressed);
                         noCheck(pieces.get(boxPressed),((!isWhiteTurn) ? 1 : 0)*posBlackKing + ((isWhiteTurn) ? 1 : 0)*posWhiteKing);                                       //Valid movement if you skip the check with the move
                       // If the piece in the box isn't the same color as the turn, EAT the piece
                       }else{
@@ -642,7 +647,6 @@ public class Board extends JPanel implements ActionListener {
                         pieces.get(boxPressed).mousePressed(e);
                         pieces.get(boxPressed).setMove(true);
                         isWhiteTurn = !isWhiteTurn;
-                        deletePosibleMovement();
                         isCheck(pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
                         strokepattern.setVisible(false);
                         isBoxPressed = false;
@@ -668,121 +672,58 @@ public class Board extends JPanel implements ActionListener {
           }
           return false;
         }
-        public boolean isCheckALLPieces(Piece pie, int posOponentKing){
-          /*
-          * Calculate if there are a check with all oponent pieces
-          */
-          check = false;
-          for(Piece p : pieces.values()){
-            if(p.isWhite() != pie.isWhite() && !check){
-              System.out.println("ISCHECK ENTRA");
-              isCheck(p, posOponentKing);
-            }
-          }
-          System.out.println("-------------------------");
-          return check;
-        }
         public void isCheck(Piece pie, int posOponentKing){
           /*
           * Calculate if once moved, check if there are check
           */
-          posibleMovement(pie, pie.getBox());
-          System.out.println("-----------posiblesMovements----------------");
-          for(Dot d : posiblesMovements.values()){
-            if(d.isVisible())
-              System.out.println(d.getBox());
-          }
-          for (Dot dot: posiblesMovements.values()){
+          posibleMovement(checkTest, pie, pie.getBox());
+          for (Dot dot : checkTest.values()){
             if(dot.isVisible() && dot.getBox() == posOponentKing){
               check = true;
               break;
-            }else if (dot.isVisible()){
+            }else if(dot.isVisible()){
               check = false;
             }
           }
-          deletePosibleMovement();
-          System.out.println("ISCHECK SALE");
+        }
+        public void isCheckALLPieces(HashMap< Integer, Piece> pies , Piece pie, int posOponentKing){
+          /*
+          * Calculate if there are a check with all oponent pieces
+          */
+          for(Piece p : pies.values()){
+            if(p.isWhite() != pie.isWhite()){
+              isCheck(p, posOponentKing);
+              if(check) break;
+            }
+          }
+
+
         }
         public void noCheck(Piece pie, int posKingTurn){
           /*
           * Once obtained the possible positions we need to discart
           * the possible position where if you moved you have been on check
           */
+          int position = pie.getBox();
 
-          System.out.println("-----------NOCHECK--------1--------");
-          posibleMovement(pie, pie.getBox());
-          System.out.println("-----------posiblesMovements----------------");
+          HashMap< Integer, Piece> pies = pieces;
+          HashMap< Integer, Dot> poss = posiblesMovements;
 
-
-          for(Dot d : posiblesMovements.values()){
-            if(d.isVisible())
-              System.out.println(d.getBox());
-          }
-
-
-          System.out.println("-----------NOCHECK---------2-------");
-          HashMap<Integer,Dot> poss2 = new HashMap<Integer,Dot>();
-          poss2 = posiblesMovements;    //We save the initial posiblesMovements map
-
-          HashMap<Integer,Dot> poss = new HashMap<Integer,Dot>();
-          poss = posiblesMovements;    //We save the initial posiblesMovements map
-          HashMap<Integer,Piece> pieces2 = new HashMap<Integer,Piece>();
-          pieces2 = pieces;
-
-          System.out.println("-----------poss----------------");
-          for(Dot d : poss.values()){
-            if(d.isVisible())
-              System.out.println(d.getBox());
-          }
-
-
-          boolean thereWasAPiece = false;
-          Piece p3 = null;
-
-          pieces.remove(pie.getBox());
+          pies.remove(position);
           for(Dot dot : poss.values()){
             if(dot.isVisible()){
-              System.out.println("---------------"+dot.getBox()+"+++++++++++++++");
-              if(pieces.containsKey(dot.getBox())){
-                p3 = pieces.get(dot.getBox());
-                pieces.remove(dot.getBox());
-                thereWasAPiece = true;
+              pies.put(dot.getBox(), pie);
+              isCheckALLPieces(pies, pie, posKingTurn);
+              if(check){
+                dot.setVisible(false);
               }
-              pieces.put(dot.getBox(), pie);
-              //Calculate the oponent possible positions of all his pieces to detect the possible check
-              System.out.println("-----------NOCHECK---------3-------");
-              boolean bo  = isCheckALLPieces(pieces.get(dot.getBox()), posKingTurn);
-              System.out.println("***********"+bo+"*************");
-              if(bo){
-                System.out.println("-----------NOCHECK--------4--------");
-                poss2.get(dot.getBox()).setVisible(false);
-              }
-              pieces.remove(dot.getBox());
-              if(thereWasAPiece){
-                pieces.put(dot.getBox(), p3);
-                thereWasAPiece = false;
-              }
+              pies.remove(dot.getBox());
             }
 
           }
-          System.out.println("-----------NOCHECK--------5--------");
-          pieces.put(pie.getBox(),pie);
-          posiblesMovements = poss2;
-          pieces = pieces2;
+          pies.put(position, pie);
+          posiblesMovements = poss;
 
-
-          System.out.println("-----------posiblesMovements----------------");
-          for(Dot d : posiblesMovements.values()){
-            if(d.isVisible())
-              System.out.println(d.getBox());
-          }
-
-
-          System.out.println("-----------POSS----------------");
-          for(Dot d : poss.values()){
-            if(d.isVisible())
-              System.out.println(d.getBox());
-          }
         }
         public void castling(){
           if( (piecePressed == 51 && (boxPressed == 31 || boxPressed == 71)) ||
