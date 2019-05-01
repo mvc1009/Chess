@@ -107,7 +107,9 @@ public class Piece {
       dx= x;
       dy = y;
     }
-
+    public int getBox(){
+      return beginningBox(x,y);
+    }
     public int beginningBox(int xi, int yi){
       int i = 0;
       int x = 9;
