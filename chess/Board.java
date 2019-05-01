@@ -64,11 +64,12 @@ public class Board extends JPanel implements ActionListener {
     private boolean shortcastling = false;
 
     private boolean check = false;
-    private boolean checkMate = false;
+    private boolean checkMate = true;
     private boolean pawnInChangingPosition = false;
 
     private int posWhiteKing = 51;
     private int posBlackKing = 58;
+
     public Board(QuitButtonEx menu, ChessGame game) {
         this.menu = menu;
         this.game = game;
@@ -236,7 +237,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void pawnPosiblePositions(HashMap<Integer, Dot> posiblesMovements, HashMap<Integer, Piece> pieces2,int box, boolean color){
       if( color ) {     //White Pawns
-        if(!pieces2.containsKey(box+1))                                                            //Print a DOT if there are any piece in front of them
+        if(!pieces2.containsKey(box+1) && box%10 < 8)                                                          //Print a DOT if there are any piece in front of them
           posiblesMovements.get(box+1).setVisible(true);
         if(box%10 == 2 && !pieces2.containsKey(box+1) && !pieces2.containsKey(box+2) )              //If the pawn is in the initial position it can be moved 2 positions.
           posiblesMovements.get(box+2).setVisible(true);
@@ -342,7 +343,6 @@ public class Board extends JPanel implements ActionListener {
      for(int i = 1; i < 9 ; i++){
        // +++++++++++++ UPWARD & RIGHTWARD +++++++++++++
        if(x+i < 9 && y+i < 9 && !pieceInMiddleUPRIGHT){
-         System.out.println("BISHOP: "+ pieces2.get(box));
          if(validDot(pieces2,box + i*10 + i, pieces2.get(box).getColor())){
            posiblesMovements.get(box + i*10 + i).setVisible(true);
            if(pieces2.containsKey(box + i*10 + i)){
@@ -490,7 +490,6 @@ public class Board extends JPanel implements ActionListener {
 
     public void posibleMovement(HashMap<Integer, Dot> map, HashMap<Integer, Piece> pieces2, Piece piece2Move, int box){ //rules
       //Esta usando el beginningBox de la clase Piece.
-        System.out.println("JFJSDJFDS"+ piece2Move + "box: " +box);
         switch(piece2Move.getType()){
           case TOWER:
               towerPosiblePositions(map,pieces2,box);
@@ -526,7 +525,7 @@ public class Board extends JPanel implements ActionListener {
 
     // +++++++++++++++++++++  FINISHIG THE GAME -> CHECKMATE ++++++++++++++++++++++++
        public void endGame(){
-          EndGame end = new EndGame(this);
+          EndGame end = new EndGame(this, isWhiteTurn);
 
        }
 // +++++++++++++++++++++  FUNCTIONS HitTestAdapter USES ++++++++++++++++++++++++
@@ -587,7 +586,6 @@ public class Board extends JPanel implements ActionListener {
 
             // Choose the piece you want to move
             if(!isBoxPressed && pieces.containsKey(boxPressed) && pieces.get(boxPressed).isWhite() == isWhiteTurn){
-                System.out.println("ESCOGIENDO PIEZA");
                 isBoxPressed = true;
                 piecePressed = boxPressed;
                 strokepattern.mousePressed(e);
@@ -598,13 +596,11 @@ public class Board extends JPanel implements ActionListener {
               }else if (isBoxPressed && isValid){
                 if(validBox){
                     if(!pieces.containsKey(boxPressed)){      // If the piece isn't in the HashMap
-                      System.out.println("ESCOGIENDO DONDE DEJAR PIEZA");
                       Piece piece2 = pieces.get(piecePressed);
                       pieces.remove(piecePressed);            // Remove the piece Presed
                       pieces.put(boxPressed, piece2);         // Add the piece removed to the new box
                       pieces.get(boxPressed).mousePressed(e);
                       pieces.get(boxPressed).setMove(true);   // Set de move to repaint
-                      System.out.println(pieces.get(boxPressed));
                       if(pieces.get(boxPressed).getType() == KING){
                         if(pieces.get(boxPressed).isWhite())            //Control de KING positions to calculate the possible check
                           posWhiteKing = boxPressed;
@@ -623,7 +619,6 @@ public class Board extends JPanel implements ActionListener {
                       isBoxPressed = false;
                     }else{                                     // If the piece is in the HashMap
                       // If the piece in the box is the same color as the turn , the pieccePressed will be changed.
-                      System.out.println("CAMBIANDO PIEZA");
                       if(pieces.get(boxPressed).isWhite() == pieces.get(piecePressed).isWhite() && pieces.get(boxPressed).isWhite() == isWhiteTurn){
                         isBoxPressed = true;
                         piecePressed = boxPressed;
@@ -633,10 +628,8 @@ public class Board extends JPanel implements ActionListener {
                         posibleMovement(posiblesMovements,pieces, pieces.get(boxPressed), boxPressed);
                         noCheck(pieces.get(boxPressed),((!isWhiteTurn) ? 1 : 0)*posBlackKing + ((isWhiteTurn) ? 1 : 0)*posWhiteKing);
                         posiblesMovements2 = posiblesMovements;
-                        System.out.println("movements established");                                  //Valid movement if you skip the check with the move
                       // If the piece in the box isn't the same color as the turn, EAT the piece
                       }else{
-                        System.out.println("MATANDO PIEZA");
                         Piece piece2 = pieces.get(piecePressed);
                         pieces.remove(piecePressed);
                         pieces.remove(boxPressed);
@@ -724,7 +717,6 @@ public class Board extends JPanel implements ActionListener {
               }
               pies.put(dot.getBox(), pie);
               if(isCheckALLPieces(pies, pie, posKingTurn)){
-                System.out.println("SET INVISIBLE");
                 dot.setVisible(false);
               }
               pies.remove(dot.getBox());
@@ -786,8 +778,6 @@ public class Board extends JPanel implements ActionListener {
           // This function is called from PawnAtEnd
           pieces.remove(boxend);
           typetochange = pawn.newType();
-          System.out.println("typetochange = " + typetochange);
-
           switch(typetochange){
             case TOWER:pieces.put(boxend, new Tower(colourPiece, true));
                   pieces.get(boxend).setMove(true);

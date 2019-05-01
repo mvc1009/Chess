@@ -13,9 +13,11 @@ public class EndGame implements ActionListener {
   Board b;
   boolean buttonPressed;
   JFrame endgame = new JFrame();
+  boolean winner;
 
   public EndGame(Board b, boolean winner) {
       this.b = b;
+      this.winner = winner;
       showFrame();
   }
 
@@ -60,8 +62,8 @@ public class EndGame implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e){
     if(e.getActionCommand() == "BACK"){
-      b.menu().setVisible(true);
-      b.game().setVisible(false);
+      b.menu.setVisible(true);
+      b.game.endGame();
     }
   }
 }

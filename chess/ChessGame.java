@@ -26,8 +26,7 @@ public class ChessGame extends JFrame {
 
     public void startGame() {
         EventQueue.invokeLater(() -> {
-            ChessGame ex = new ChessGame();
-            ex.setVisible(true);
+            this.setVisible(true);
         });
     }
     public void endGame(){

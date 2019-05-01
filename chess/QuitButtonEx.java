@@ -71,7 +71,7 @@ public class QuitButtonEx extends JPanel implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e){
         if ("PLAY".equals(e.getActionCommand())){
-          ChessGame chess = new ChessGame();
+          ChessGame chess = new ChessGame(this);
           chess.startGame();
           menu.setVisible(false);
         }
