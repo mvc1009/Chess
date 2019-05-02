@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.HashMap;
+import java.util.ConcurrentModificationException;
+
 
 import chess.piece.*;
 
@@ -789,28 +791,35 @@ public class Board extends JPanel implements ActionListener {
           posiblesMovements2 = poss56;
         }
         public boolean isCheckMate(){
-          HashMap< Integer, Piece> pies = pieces;
-            if(check){
-              for(Piece p : pies.values()){
-                if(p.isWhite() != isWhiteTurn){
-                  posibleMovement(checkTest, pies, p, p.getBox());
-                  noCheck(p,((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
-                  for(Dot dot : checkTest.values()){
-                    if(dot.isVisible()){
-                      System.out.println("----------NOT CHECKMATE-------------");
-                      System.out.println(dot.getBox());
-
+          try{
+            HashMap< Integer, Piece> pies = pieces;
+              if(check){
+                for(Piece p : pies.values()){
+                  if(p.isWhite() != isWhiteTurn){
+                    deletePosibleMovement();
+                    for(Dot d : checkTest.values()){
+                      d.setVisible(false);
                     }
-                  }
-                  return false;
+                    posibleMovement(checkTest, pies, p, p.getBox());
+                    noCheck(p,((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
+                    for(Dot dot : checkTest.values()){
+                      if(dot.isVisible()){
+                        System.out.println("----------NOT CHECKMATE-------------");
+                        System.out.println(dot.getBox());
+                        return false;
+                      }
+                    }
 
+
+                  }
                 }
+                return true;
               }
+              System.out.println("------------SDFSDFSDF--------------");
+              return false;
+            }catch (ConcurrentModificationException ex){
               return true;
             }
-            System.out.println("------------SDFSDFSDF--------------");
-            return false;
-
 
         }
         public void castling(){
