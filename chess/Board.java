@@ -613,7 +613,7 @@ public class Board extends JPanel implements ActionListener {
                       deletePosibleMovement();
                       castling();
                       check = isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed);
-                      checkMate = isCheckMate();
+                      checkMate = isCheckMate(pieces.get(boxPressed),((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
                       if(checkMate){
                         endGame();
                       }
@@ -642,7 +642,7 @@ public class Board extends JPanel implements ActionListener {
                         deletePosibleMovement();
                         check = isCheck(pieces,pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing, boxPressed);
                         System.out.println("CHECK : " + check);
-                        checkMate = isCheckMate();
+                        checkMate = isCheckMate(pieces.get(boxPressed), ((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
                         if(checkMate){
                           endGame();
                         }
@@ -707,7 +707,7 @@ public class Board extends JPanel implements ActionListener {
           * Calculate if there are a check with all oponent pieces
           */
           for(Piece p : pies.values()){
-            if(p.isWhite() == pie.isWhite() && p != pie){
+            if(p.isWhite() != pie.isWhite() && p != pie){
               if(isCheck(pies,p, posOponentKing, p.getBox()))
                 return true;
             }
@@ -773,7 +773,7 @@ public class Board extends JPanel implements ActionListener {
               if(pie.getType() == KING){
                 posKing = dot.getBox();
               }
-              if(isCheckALLPiecesMate(pies, pie, posKing)){
+              if(isCheckALLPieces(pies, pie, posKing)){
                 dot.setVisible(false);
               }
               pies.remove(dot.getBox());
@@ -788,14 +788,18 @@ public class Board extends JPanel implements ActionListener {
           pies.put(position, pie);
           posiblesMovements2 = poss56;
         }
-        public boolean isCheckMate(){
+        public boolean isCheckMate(Piece pie, int posking){
           HashMap< Integer, Piece> pies = pieces;
             if(check){
               for(Piece p : pies.values()){
-                if(p.isWhite() != isWhiteTurn){
-                  posibleMovement(checkTest, pies, p, p.getBox());
-                  noCheck(p,((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
-                  for(Dot dot : checkTest.values()){
+                if(p.isWhite() != pie.isWhite() ){
+                  deletePosibleMovement();
+                  for(Dot d : posiblesMovements2.values()){
+                    d.setVisible(false);
+                  }
+                  posibleMovement(posiblesMovements, pies, p, p.getBox());
+                  noCheck(p,posking);
+                  for(Dot dot : posiblesMovements2.values()){
                     if(dot.isVisible()){
                       System.out.println("----------NOT CHECKMATE-------------");
                       System.out.println(dot.getBox());
