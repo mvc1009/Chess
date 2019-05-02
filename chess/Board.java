@@ -792,17 +792,18 @@ public class Board extends JPanel implements ActionListener {
           HashMap< Integer, Piece> pies = pieces;
             if(check){
               for(Piece p : pies.values()){
-                if(p.isWhite() == isWhiteTurn){
+                if(p.isWhite() != isWhiteTurn){
                   posibleMovement(checkTest, pies, p, p.getBox());
-                  noCheckMate(p,((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
+                  noCheck(p,((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
                   for(Dot dot : checkTest.values()){
                     if(dot.isVisible()){
                       System.out.println("----------NOT CHECKMATE-------------");
                       System.out.println(dot.getBox());
-                      return false;
 
                     }
                   }
+                  return false;
+
                 }
               }
               return true;
