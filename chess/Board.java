@@ -663,6 +663,7 @@ public class Board extends JPanel implements ActionListener {
             firstPressed = boxPressed;
         }
 
+
         // ++++++++++++++++++++++++++ GAME RULES +++++++++++++++++++++++++++++++
         public boolean validMove(int box, int box1, HashMap<Integer, Dot> moves){
           //Choose pieces from the other color.
@@ -804,8 +805,6 @@ public class Board extends JPanel implements ActionListener {
                     noCheck(p,((isWhiteTurn) ? 1 : 0)*posBlackKing + ((!isWhiteTurn) ? 1 : 0)*posWhiteKing);
                     for(Dot dot : checkTest.values()){
                       if(dot.isVisible()){
-                        System.out.println("----------NOT CHECKMATE-------------");
-                        System.out.println(dot.getBox());
                         return false;
                       }
                     }
@@ -815,7 +814,6 @@ public class Board extends JPanel implements ActionListener {
                 }
                 return true;
               }
-              System.out.println("------------SDFSDFSDF--------------");
               return false;
             }catch (ConcurrentModificationException ex){
               return true;
